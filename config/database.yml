@@ -10,7 +10,7 @@ development:
   port: 5432
   username: goblin_rails
   password: goblin_gfhjkm
-  database: goblin_rails_dev
+  database: goblin_rails_dev2
   schema_search_path: public
   encoding: utf8
   template: template1

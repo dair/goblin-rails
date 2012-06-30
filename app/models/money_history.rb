@@ -1,7 +1,6 @@
 class MoneyHistory < ActiveRecord::Base
   set_table_name "money_history"
-  attr_accessible :sender_id, :receiver_id, :tdate, :value
-  set_primary_key :sender_id, :receiver_id, :tdate
-  has_one :Person, :foreign_key => :sender_id
-  has_one :Person, :foreign_key => :receiver_id
+  attr_accessible :receiver_id, :sender_id, :tdate, :value
+  belongs_to :person, :foreign_key => "receiver_id"
+  belongs_to :person, :foreign_key => "sender_id"
 end

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  sender_id: 1
+  receiver_id: 1
+  tdate: 2012-06-30 20:53:15
+  value: 1
+
+two:
+  sender_id: 1
+  receiver_id: 1
+  tdate: 2012-06-30 20:53:15
+  value: 1

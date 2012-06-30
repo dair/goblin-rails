@@ -11,125 +11,56 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 0) do
+ActiveRecord::Schema.define(:version => 20120630175002) do
 
   create_table "money", :id => false, :force => true do |t|
-    t.decimal "id",                    :precision => 10, :scale => 0,                :null => false
-    t.decimal "balance",               :precision => 15, :scale => 0, :default => 0, :null => false
-    t.string  "pin",      :limit => 5,                                               :null => false
-    t.decimal "failures",              :precision => 1,  :scale => 0, :default => 0, :null => false
+    t.integer "id",                                    :null => false
+    t.integer "balance",                :default => 0, :null => false
+    t.string  "pin",      :limit => 10,                :null => false
+    t.integer "failures",               :default => 0, :null => false
   end
+
+  add_index "money", ["id"], :name => "index_money_on_id"
 
   create_table "money_history", :id => false, :force => true do |t|
-    t.decimal  "sender_id",   :precision => 10, :scale => 0, :null => false
-    t.decimal  "receiver_id", :precision => 10, :scale => 0, :null => false
-    t.datetime "tdate",                                      :null => false
-    t.decimal  "value",       :precision => 15, :scale => 0, :null => false
+    t.integer  "sender_id"
+    t.integer  "receiver_id"
+    t.datetime "tdate"
+    t.integer  "value"
   end
 
-  create_table "person", :id => false, :force => true do |t|
-    t.decimal "id",                   :precision => 10, :scale => 0,                  :null => false
-    t.string  "name",   :limit => 50,                                                 :null => false
-    t.string  "gender", :limit => 1,                                                  :null => false
-    t.string  "race",   :limit => 1,                                 :default => "H", :null => false
+  add_index "money_history", ["receiver_id"], :name => "index_money_history_on_receiver_id"
+  add_index "money_history", ["sender_id"], :name => "index_money_history_on_sender_id"
+  add_index "money_history", ["tdate"], :name => "index_money_history_on_tdate"
+
+  create_table "person", :force => true do |t|
+    t.string "name",   :limit => 50,                  :null => false
+    t.string "gender", :limit => 1,                   :null => false
+    t.string "race",   :limit => 1,  :default => "H", :null => false
   end
 
-  create_table "person_prop", :id => false, :force => true do |t|
-    t.decimal "prop_id",                 :precision => 10, :scale => 0, :null => false
-    t.decimal "pers_id",                 :precision => 10, :scale => 0, :null => false
-    t.string  "value",   :limit => 4096,                                :null => false
+  add_index "person", ["id"], :name => "index_person_on_id"
+
+  create_table "person_property", :id => false, :force => true do |t|
+    t.integer "pers_id"
+    t.integer "prop_id"
+    t.text    "value"
   end
+
+  add_index "person_property", ["pers_id"], :name => "index_person_property_on_pers_id"
+  add_index "person_property", ["prop_id"], :name => "index_person_property_on_prop_id"
 
   create_table "property", :force => true do |t|
-    t.string "name",   :limit => 50,                  :null => false
-    t.string "police", :limit => 1,  :default => "N"
+    t.string "name",   :limit => 50, :null => false
+    t.string "police", :limit => 1,  :null => false
   end
 
-  create_table "stock_company", :id => false, :force => true do |t|
-    t.string  "key",          :limit => 5,                                                       :null => false
-    t.string  "name",         :limit => 100,                                                     :null => false
-    t.decimal "total_stock",                 :precision => 10, :scale => 0, :default => 1000000, :null => false
-    t.string  "status",       :limit => 1,                                  :default => "A",     :null => false
-    t.decimal "market_stock",                :precision => 10, :scale => 0, :default => 150000,  :null => false
-  end
+  add_foreign_key "money", "person", :name => "money_id_fk", :column => "id"
 
-  create_table "stock_cycle", :force => true do |t|
-    t.datetime "start_time",   :null => false
-    t.datetime "border1_time", :null => false
-    t.datetime "border2_time", :null => false
-    t.datetime "finish_time",  :null => false
-  end
+  add_foreign_key "money_history", "person", :name => "money_history_receiver_id_fk", :column => "receiver_id"
+  add_foreign_key "money_history", "person", :name => "money_history_sender_id_fk", :column => "sender_id"
 
-  create_table "stock_history", :id => false, :force => true do |t|
-    t.decimal  "sender_id",                :precision => 10, :scale => 0, :null => false
-    t.decimal  "receiver_id",              :precision => 10, :scale => 0, :null => false
-    t.string   "company_key", :limit => 5,                                :null => false
-    t.datetime "tdate",                                                   :null => false
-    t.decimal  "qty",                      :precision => 10, :scale => 0, :null => false
-    t.decimal  "price",                    :precision => 10, :scale => 0, :null => false
-  end
-
-  create_table "stock_news", :force => true do |t|
-    t.datetime "publish_time",                 :null => false
-    t.string   "title",        :limit => 200,  :null => false
-    t.string   "ntext",        :limit => 2000, :null => false
-  end
-
-  create_table "stock_owner", :id => false, :force => true do |t|
-    t.decimal "person_id",              :precision => 10, :scale => 0,                :null => false
-    t.string  "key",       :limit => 5,                                               :null => false
-    t.decimal "quantity",               :precision => 10, :scale => 0, :default => 0, :null => false
-  end
-
-  create_table "stock_quote", :id => false, :force => true do |t|
-    t.decimal "cycle_id",                 :precision => 5,  :scale => 0,                     :null => false
-    t.string  "company_key", :limit => 5,                                                    :null => false
-    t.decimal "price",                    :precision => 10, :scale => 0,                     :null => false
-    t.decimal "trade_limit",              :precision => 10, :scale => 0, :default => 150000, :null => false
-    t.decimal "npcs_buy",                 :precision => 10, :scale => 0, :default => 100000, :null => false
-  end
-
-  create_table "stock_request", :force => true do |t|
-    t.decimal  "person_id",                :precision => 10, :scale => 0,                  :null => false
-    t.decimal  "cycle_id",                 :precision => 5,  :scale => 0,                  :null => false
-    t.string   "company_key", :limit => 5,                                                 :null => false
-    t.datetime "rtime",                                                                    :null => false
-    t.string   "status",      :limit => 1,                                :default => "A", :null => false
-    t.string   "operation",   :limit => 1,                                                 :null => false
-    t.decimal  "quantity",                 :precision => 10, :scale => 0,                  :null => false
-  end
-
-  create_table "vk_answer", :id => false, :force => true do |t|
-    t.decimal "question_id",                   :precision => 10, :scale => 0,                :null => false
-    t.decimal "id",                            :precision => 10, :scale => 0,                :null => false
-    t.string  "text",          :limit => 1024,                                               :null => false
-    t.integer "human_value",                                                  :default => 0, :null => false
-    t.integer "android_value",                                                :default => 0, :null => false
-  end
-
-  create_table "vk_question", :force => true do |t|
-    t.string "text",   :limit => 1024,                  :null => false
-    t.string "gender", :limit => 1,    :default => "A", :null => false
-  end
-
-  create_table "vk_session", :force => true do |t|
-    t.decimal  "person_id",               :precision => 10, :scale => 0,                  :null => false
-    t.datetime "start_date",                                                              :null => false
-    t.decimal  "device_id",               :precision => 5,  :scale => 0,                  :null => false
-    t.string   "status",     :limit => 1,                                :default => "A", :null => false
-  end
-
-  create_table "vk_session_answer", :id => false, :force => true do |t|
-    t.decimal  "session_id",  :precision => 10, :scale => 0, :null => false
-    t.decimal  "question_id", :precision => 10, :scale => 0, :null => false
-    t.decimal  "answer_id",   :precision => 10, :scale => 0, :null => false
-    t.datetime "atime",                                      :null => false
-  end
-
-  create_table "vk_session_question", :id => false, :force => true do |t|
-    t.decimal  "session_id",  :precision => 10, :scale => 0, :null => false
-    t.decimal  "question_id", :precision => 10, :scale => 0, :null => false
-    t.datetime "qtime",                                      :null => false
-  end
+  add_foreign_key "person_property", "person", :name => "person_property_pers_id_fk", :column => "pers_id"
+  add_foreign_key "person_property", "property", :name => "person_property_prop_id_fk", :column => "prop_id"
 
 end
