@@ -1,4 +1,8 @@
-Railstest::Application.routes.draw do
+GoblinRails::Application.routes.draw do
+  get "science/index"
+  post "science/login"
+  get "science/main"
+  post "science/logout"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

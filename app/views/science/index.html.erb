@@ -1,0 +1,31 @@
+<div align="center"> 
+    <%= form_tag(:action => "login") do %> 
+      <table cellpadding="5" align="middle" style="border-collapse: collapse; display: table; width: 300px;" class=" htmtableborders"> 
+        <tbody> 
+          <tr align="center"> 
+            <td rowspan="1" colspan="2"> 
+              <img align="top" src="../assets/logo.jpg" style="width: 263px; height: 140px;" /> 
+            </td> 
+          </tr>
+          <% if @password_fail %>
+          <tr>
+          	<td rowspan="1" colspan="2">
+				<div align="center"><font size=+2 color=red>Такой комбинации ID и пароля не существует</font></div>          		
+          	</td>
+          </tr>
+          <% end %>
+          <tr> 
+            <td style="background-image: none; border-width: 0px; text-align: right; vertical-align: middle; border-style: none;">&nbsp;ID:</td> 
+            <td><%= text_field_tag("name") %></td> 
+          </tr> 
+          <tr> 
+            <td style="background-image: none; border-width: 0px; text-align: right; vertical-align: middle; border-style: none;">Пароль: <br /></td> 
+            <td><%= password_field_tag("password") %></td> 
+          </tr> 
+          <tr> 
+            <td rowspan="1" colspan="2"><center><%= submit_tag("Войти") %></center></td> 
+          </tr>
+        </tbody> 
+      </table> 
+    <% end %>
+</div>	

@@ -1,0 +1,16 @@
+<table cellspacing="0" cellpadding="0" class=" htmtableborders" style="width: 100%; border: 0px solid #000000; border-collapse: collapse; display: table; height: 125px; padding: 0px;"> 
+    <tbody> 
+      <tr valign="center"> 
+        <td style="width: 200px; height: 125px;">
+        	<img align="left" style="width: 200px; height: 125px;" alt="Winconsin University" src="../assets/logo.jpg" />
+        </td> 
+        <td style="text-align: center;"> 
+          <h1>Научные исследования</h1> 
+          <h2><%= @subtitle %></h2>
+        </td> 
+        <td style="text-align: right; vertical-align: middle;"><br /> 
+          <%= form_tag(:action => "logout") do %>&nbsp;<%= @username %>&nbsp;<input type="submit" value="Выйти" name="Logout" /><% end %><br /> 
+        </td>
+      </tr> 
+    </tbody> 
+</table>

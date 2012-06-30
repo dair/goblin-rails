@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Railstest::Application.load_tasks
+GoblinRails::Application.load_tasks
