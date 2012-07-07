@@ -3,6 +3,9 @@ GoblinRails::Application.routes.draw do
   post "science/login"
   get "science/main"
   post "science/logout"
+  get "science/project_edit"
+  post "science/project_write"
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

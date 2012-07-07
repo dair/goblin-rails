@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120630175002) do
+ActiveRecord::Schema.define(:version => 20120704232706) do
 
   create_table "money", :id => false, :force => true do |t|
     t.integer "id",                                    :null => false
@@ -50,6 +50,34 @@ ActiveRecord::Schema.define(:version => 20120630175002) do
   add_index "person_property", ["pers_id"], :name => "index_person_property_on_pers_id"
   add_index "person_property", ["prop_id"], :name => "index_person_property_on_prop_id"
 
+  create_table "project", :force => true do |t|
+    t.integer  "key",                                       :null => false
+    t.string   "name",                                      :null => false
+    t.text     "description"
+    t.integer  "money",                    :default => 0,   :null => false
+    t.string   "status",      :limit => 1, :default => "A", :null => false
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
+  end
+
+  add_index "project", ["key"], :name => "index_project_on_key"
+
+  create_table "project_key", :primary_key => "key", :force => true do |t|
+  end
+
+  add_index "project_key", ["key"], :name => "index_project_key_on_key"
+
+  create_table "project_team", :id => false, :force => true do |t|
+    t.integer  "project_key",              :null => false
+    t.integer  "person_id",                :null => false
+    t.string   "status",      :limit => 1
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
+  end
+
+  add_index "project_team", ["person_id"], :name => "index_project_team_on_person_id"
+  add_index "project_team", ["project_key"], :name => "index_project_team_on_project_key"
+
   create_table "property", :force => true do |t|
     t.string "name",   :limit => 50, :null => false
     t.string "police", :limit => 1,  :null => false
@@ -62,5 +90,10 @@ ActiveRecord::Schema.define(:version => 20120630175002) do
 
   add_foreign_key "person_property", "person", :name => "person_property_pers_id_fk", :column => "pers_id"
   add_foreign_key "person_property", "property", :name => "person_property_prop_id_fk", :column => "prop_id"
+
+  add_foreign_key "project", "project_key", :name => "project_key_fk", :column => "key", :primary_key => "key"
+
+  add_foreign_key "project_team", "person", :name => "project_team_person_id_fk"
+  add_foreign_key "project_team", "project_key", :name => "project_team_project_key_fk", :column => "project_key", :primary_key => "key"
 
 end

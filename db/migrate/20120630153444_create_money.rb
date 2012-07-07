@@ -6,6 +6,7 @@ class CreateMoney < ActiveRecord::Migration
       t.string :pin, :limit => 10, :null => false
       t.integer :failures, :null => false, :default => 0
     end
+    primary_key(:money, :id)
     add_foreign_key(:money, :person, column: :id)
     add_index :money, :id
   end
