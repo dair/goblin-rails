@@ -7,21 +7,21 @@
       </tr>
       <tr>
         <td>
-        	<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>&nbsp;<%= link_to 'Редактировать проектную группу', :controller => "science", :action => "members_edit", :key => @project[:key] %>
+        	<%= link_to 'Вернуться к редактированию проекта', :controller => "science", :action => "main" %>&nbsp;<%= link_to 'Редактировать проект', :controller => "science", :action => "project_edit", :key => @project[:key] %>
+        	<br/></br/>
         	<% if (not @error) %>
-				<%= form_tag(:action => "project_write") do %>
+				<%= form_tag(:action => "members_write") do %>
 				<%= hidden_field_tag 'key', @project[:key] %>  
 				    <table cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
 				      <tbody>
 				        <tr>
-				          <td style="text-align: right; vertical-align: top;">Название проекта:</td> 
-				          <td style="text-align: left; vertical-align: top;"><%= text_field_tag("name", @project[:name], :size => 120) %></td> 
+				          <td style="text-align: right; vertical-align: top;">Участники проекта:</td> 
+				          <td style="text-align: left; vertical-align: top;"><%= select_tag("list", options_from_collection_for_select(@members, "id", "name"), :multiple => :true) %></td> 
 				        </tr> 
 				        <tr> 
-				          <td style="text-align: right; vertical-align: top;">Описание проекта:</td> 
+				          <td style="text-align: right; vertical-align: top;">Добавить участника:</td> 
 				          <td style="text-align: left; vertical-align: top;">
-				          	<%=  %> 
-				            <%= text_area_tag("description", @project[:description], :size => "90x10") %> 
+				            <%= text_field_tag("name", "", :size => 120) %> 
 				          </td> 
 				        </tr> 
 				        <tr> 
@@ -31,10 +31,8 @@
 				      </tbody> 
 				    </table> 
 				<% end %>
-				
 			<% else %>
 				<font size=+2 color=red>Проект не найден</font><br />
-				<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
 			<% end %>
 		</td>
       </tr>

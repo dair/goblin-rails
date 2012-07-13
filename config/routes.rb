@@ -1,9 +1,12 @@
 GoblinRails::Application.routes.draw do
+  root :to => "science#index"
+  
   get "science/index"
   post "science/login"
   get "science/main"
   post "science/logout"
   get "science/project_edit"
+  get "science/members_edit"
   post "science/project_write"
   
   # The priority is based upon order of creation:

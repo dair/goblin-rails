@@ -96,4 +96,26 @@ class ScienceController < ApplicationController
     
     redirect_to :action => "main"    
   end
+  
+  
+  ########################################################################################
+  def members_edit
+    if (not session[:userid])
+      redirect_to :action => "index"
+      return
+    end
+    @username = session[:username]
+    
+    key = 0
+    begin
+      if (params[:key])
+        key = Integer(params[:key])
+      end
+    rescue ArgumentError
+      key = 0
+    end
+    
+    
+    
+  end
 end

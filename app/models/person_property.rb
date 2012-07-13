@@ -1,5 +1,5 @@
-class PersonProperty < ActiveRecord::Base
-  set_table_name "person_property"
+class PersonProp < ActiveRecord::Base
+  set_table_name "person_prop"
   attr_accessible :pers_id, :prop_id, :value
   
   belongs_to :person, :class_name => "Person", :foreign_key => :pers_id
