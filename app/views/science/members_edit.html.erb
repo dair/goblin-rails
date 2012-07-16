@@ -7,30 +7,36 @@
       </tr>
       <tr>
         <td>
-        	<%= link_to 'Вернуться к редактированию проекта', :controller => "science", :action => "main" %>&nbsp;<%= link_to 'Редактировать проект', :controller => "science", :action => "project_edit", :key => @project[:key] %>
+        	<%= link_to 'Вернуться к информации о проекте', :controller => "science", :action => "project_info", :key => @project["key"] %>
         	<br/></br/>
         	<% if (not @error) %>
-				<%= form_tag(:action => "members_write") do %>
-				<%= hidden_field_tag 'key', @project[:key] %>  
 				    <table cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
 				      <tbody>
 				        <tr>
 				          <td style="text-align: right; vertical-align: top;">Участники проекта:</td> 
-				          <td style="text-align: left; vertical-align: top;"><%= select_tag("list", options_from_collection_for_select(@members, "id", "name"), :multiple => :true) %></td> 
+							<%= form_tag(:action => "members_delete") do %>
+							<%= hidden_field_tag 'key', @project["key"] %>  
+				          <td style="text-align: left; vertical-align: top;">
+				          	<%= select_tag("list", options_from_collection_for_select(@members, "id", "name"), :size => @members.size) %>
+				          	<%= submit_tag("Удалить") %>
+				          </td>
+				          	<% end %> 
 				        </tr> 
-				        <tr> 
+				        <tr>
 				          <td style="text-align: right; vertical-align: top;">Добавить участника:</td> 
 				          <td style="text-align: left; vertical-align: top;">
+							<%= form_tag(:action => "members_add") do %>
+							<%= hidden_field_tag 'key', @project["key"] %>  
 				            <%= text_field_tag("name", "", :size => 120) %> 
 				          </td> 
 				        </tr> 
 				        <tr> 
 				          <td>&nbsp;</td>
-				          <td><%= submit_tag("Сохранить") %></td> 
+				          <td><%= submit_tag("Сохранить") %></td>
+	          				<% end %>
 				        </tr>
 				      </tbody> 
 				    </table> 
-				<% end %>
 			<% else %>
 				<font size=+2 color=red>Проект не найден</font><br />
 			<% end %>

@@ -14,14 +14,18 @@ class ApplicationController < ActionController::Base
   end
   
   def login
-    id = params[:name]
-    password = params[:password]
+    begin
+      id = Integer(params[:name])
+      password = params[:password]
     
-    ret = Money.checkCredentials(id, password)
+      ret = GoblinDb.checkCredentials(id, password)
+    rescue ArgumentError
+      ret = false
+    end
     
     if (ret)
       session[:userid] = id
-      session[:username] = Person.find(id).name
+      session[:username] = GoblinDb.getPersonName(id)
       redirect_to :action => "main"
     else
       session[:fail] = true

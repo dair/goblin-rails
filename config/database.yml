@@ -6,37 +6,37 @@
 
 development:
   adapter: postgresql
-  host: 192.168.8.100
+  host: 192.168.8.150
   port: 5432
-  username: goblin_rails
+  username: goblin_web
   password: goblin_gfhjkm
-  database: goblin_rails_dev2
+  database: goblin
   schema_search_path: public
   encoding: utf8
   template: template1
   
 test:
   adapter: postgresql
-  host: 192.168.8.100
+  host: 192.168.8.150
   port: 5432
-  username: goblin_rails
+  username: goblin_web
   password: goblin_gfhjkm
-  database: goblin_rails_test
+  database: goblin
   schema_search_path: public
   encoding: utf8
   template: template1
-
+  
 production:
   adapter: postgresql
-  host: 192.168.8.100
+  host: 192.168.8.150
   port: 5432
-  username: goblin_rails
+  username: goblin_web
   password: goblin_gfhjkm
-  database: goblin_rails_release
+  database: goblin
   schema_search_path: public
   encoding: utf8
   template: template1
-
+  
 #development:
 #  adapter: sqlite3
 #  database: db/development.sqlite3
