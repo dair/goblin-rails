@@ -191,21 +191,34 @@ class ScienceController < ApplicationController
     end
   end
   
-########################################################################################
-  def members_delete
+  def members_action
     if failLogin() or failProjectPermission(params[:key])
       return
     end
-    
+
     key = id0(params[:key])
     person_id = id0(params[:list])
-    puts key
-    puts person_id
-    
+
+    if (params[:method] == "delete")
+      members_delete(key, person_id)
+    elsif (params[:method] == "pass")
+      members_pass(key, person_id)
+    end
+  end
+  
+########################################################################################
+  def members_delete(key, person_id)
     if (key > 0 and person_id > 0)
       GoblinDb.removePersonFromProject(person_id, key)
     end
     redirect_to :action => "members_edit", :key => params[:key]
+  end
+  
+  def members_pass(key, person_id)
+    if (key > 0 and person_id > 0)
+      GoblinDb.passLeadershipToPersonForProject(person_id, key)
+    end
+    redirect_to :action => "project_info", :key => params[:key]
   end
   
   def members_add
@@ -215,9 +228,7 @@ class ScienceController < ApplicationController
     
     key = id0(params[:key])
     
-    puts "===================================================================="
     person = GoblinDb.findPerson(params[:name])
-    puts person
     
     if person == nil
       addError("Такой пользователь не найден")
@@ -235,12 +246,9 @@ class ScienceController < ApplicationController
         addError("Такой пользователь уже в команде")
       else
         puts "adding " + String(key) + " to " + String(person["id"])
-        GoblinDb.addPersonToProjectTeam(person["id"]. key)
+        GoblinDb.addPersonToProjectTeam(person["id"], key)
       end
     end
-    puts "===================================================================="
-    puts flash[:last_error]
-    puts "===================================================================="
     
     redirect_to :action => "members_edit", :key => params[:key]
   end

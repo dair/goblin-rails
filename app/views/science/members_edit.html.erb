@@ -15,6 +15,23 @@
 		{
 			if (confirm("Удалить участника " + txt + " из проектной группы?"))
 			{
+				document.getElementById("method").value = "delete"
+				form.submit()
+			}
+		}
+		else
+		{
+			alert("Не выбран участник для удаления")
+		}
+	}
+	
+	function onSetLeaderButton(form, txt)
+	{
+		if (txt != null)
+		{
+			if (confirm("Передать все права на управление группой участнику " + txt + "?"))
+			{
+				document.getElementById("method").value = "pass"
 				form.submit()
 			}
 		}
@@ -41,11 +58,21 @@
 				      <tbody>
 				        <tr>
 				          <td style="text-align: right; vertical-align: top;">Участники проекта:</td> 
-							<%= form_tag(:action => "members_delete") do %>
+							<%= form_tag(:action => "members_action") do %>
 							<%= hidden_field_tag 'key', @project["key"] %>  
 				          <td style="text-align: left; vertical-align: top;">
-				          	<%= select_tag("list", options_from_collection_for_select(@members, "id", "name"), :size => @members.size) %>
-				          	<input type="button" value="Удалить" onclick='onDeleteButton(this.form, getSelectedText("list"))' />
+				          	<table>
+				          		<tr>
+				          			<td>
+							          	<%= select_tag("list", options_from_collection_for_select(@members, "id", "name"), :size => @members.size) %>
+						          	</td>
+				          			<td>
+				          				<input type="hidden" id="method" name="method" value="" />
+							          	<input type="button" id="pass" name="pass" value="Передать проект" onclick='onSetLeaderButton(this.form, getSelectedText("list"))' /><br />
+							          	<input type="button" id="remove" name="remove" value="Удалить" onclick='onDeleteButton(this.form, getSelectedText("list"))' />
+						          	</td>
+					          	</tr>
+				          	</table>
 				          	<!--<%= submit_tag("Удалить", :confirm => 'Шо?') %>-->
 				          </td>
 				          	<% end %>

@@ -139,6 +139,15 @@ class GoblinDb < ActiveRecord::Base
   def self.removePersonFromProject(person_id, key)
     connection.update("UPDATE project_team set status='H', updated_at = now() where
                        project_key = #{sanitize(key)} and person_id = #{sanitize(person_id)}")
+  end
+  
+  def self.passLeadershipToPersonForProject(person_id, key)
+    transaction do
+      connection.update("UPDATE project_team set status='A', updated_at = now() where
+                         project_key = #{sanitize(key)} and status='L'")
+      connection.update("UPDATE project_team set status='L', updated_at = now() where
+                         project_key = #{sanitize(key)} and person_id = #{sanitize(person_id)} and status='A'")
+    end
   end  
 end
 

@@ -10,7 +10,7 @@ GoblinRails::Application.routes.draw do
   get "science/project_edit"
   get "science/members_edit"
   post "science/project_write"
-  post "science/members_delete"
+  post "science/members_action"
   post "science/members_add"
   
   # The priority is based upon order of creation:
