@@ -1,3 +1,30 @@
+<script language="JavaScript1.1">
+	function getSelectedText(elementId)
+	{
+		var elt = document.getElementById(elementId)
+		
+		if (elt.selectedIndex == -1)
+			return null;
+			
+		return elt.options[elt.selectedIndex].text;
+	}
+
+	function onDeleteButton(form, txt)
+	{
+		if (txt != null)
+		{
+			if (confirm("Удалить участника " + txt + " из проектной группы?"))
+			{
+				form.submit()
+			}
+		}
+		else
+		{
+			alert("Не выбран участник для удаления")
+		}
+	}
+</script>
+
 <table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border-collapse: collapse; padding: 0px; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
     <tbody>
       <tr>
@@ -18,9 +45,10 @@
 							<%= hidden_field_tag 'key', @project["key"] %>  
 				          <td style="text-align: left; vertical-align: top;">
 				          	<%= select_tag("list", options_from_collection_for_select(@members, "id", "name"), :size => @members.size) %>
-				          	<%= submit_tag("Удалить") %>
+				          	<input type="button" value="Удалить" onclick='onDeleteButton(this.form, getSelectedText("list"))' />
+				          	<!--<%= submit_tag("Удалить", :confirm => 'Шо?') %>-->
 				          </td>
-				          	<% end %> 
+				          	<% end %>
 				        </tr> 
 				        <tr>
 				          <td style="text-align: right; vertical-align: top;">Добавить участника:</td> 

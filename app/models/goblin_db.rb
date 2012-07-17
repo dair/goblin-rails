@@ -104,11 +104,7 @@ class GoblinDb < ActiveRecord::Base
     end
   end
 
-
-
-
-
-  
+###############################################################################  
   def self.findPerson(personName)
     personId = 0
     begin
@@ -122,16 +118,27 @@ class GoblinDb < ActiveRecord::Base
       rows = connection.select_all(%Q{select id, name from person where id = #{sanitize(personId)}})
     end
     
-    if (rows.size > 0)
-      return rows[0]
+    if (rows.size == 0)
+      rows = connection.select_all(%Q{select id, name from person where name = #{sanitize(personName)}})
     end
     
-    rows = connection.select_all(%Q{select id, name from person where name = #{sanitize(personName)}})
-    if (rows.size > 0)
+    if rows.size > 0
+      rows[0]["id"] = Integer(rows[0]["id"])
       return rows[0]
     end
     
     return nil
   end
+
+###############################################################################  
+  def self.addPersonToProjectTeam(person_id, key)
+    connection.insert("INSERT INTO project_team (project_key, person_id, status, created_at, updated_at)
+                        values (#{sanitize(key)}, #{sanitize(person_id)}, 'A', now(), now())")
+  end  
+
+  def self.removePersonFromProject(person_id, key)
+    connection.update("UPDATE project_team set status='H', updated_at = now() where
+                       project_key = #{sanitize(key)} and person_id = #{sanitize(person_id)}")
+  end  
 end
 

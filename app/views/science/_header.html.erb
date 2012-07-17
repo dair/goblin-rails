@@ -11,6 +11,12 @@
         <td style="text-align: right; vertical-align: middle;"><br /> 
           <%= form_tag(:action => "logout") do %>&nbsp;<%= @username %>&nbsp;<input type="submit" value="Выйти" name="Logout" /><% end %><br /> 
         </td>
+      </tr>
+      <tr valign="center">
+      	<td colspan="3" align="center">
+      		<font size="+1" color="red"><%= @last_error %></font>
+      		<% @last_error = "" %>
+      	</td>
       </tr> 
     </tbody> 
 </table>
