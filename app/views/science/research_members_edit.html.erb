@@ -1,0 +1,96 @@
+<script language="JavaScript1.1">
+	function sortSelect(selElem) {
+        var tmpAry = new Array();
+        for (var i=0;i<selElem.options.length;i++) {
+            tmpAry[i] = new Array();
+            tmpAry[i][0] = selElem.options[i].text;
+            tmpAry[i][1] = selElem.options[i].value;
+        }
+        tmpAry.sort();
+        while (selElem.options.length > 0) {
+            selElem.options[0] = null;
+        }
+        for (var i=0;i<tmpAry.length;i++) {
+            var op = new Option(tmpAry[i][0], tmpAry[i][1]);
+            selElem.options[i] = op;
+        }
+        return;
+    }
+    
+	function moveItems(from, to)
+	{
+		var selectedArray = new Array();
+		var i;
+		var count = 0;
+		var toLen = to.options.length;
+		for (i = 0; i < from.options.length; i++)
+		{
+			if (from.options[i].selected)
+			{
+				selectedArray[count] = i
+				to.options[toLen + count] = new Option(from.options[i].text, from.options[i].value, false, false)
+				count++;
+			}
+		}
+		
+		for (i = count; i >= 0; i--)
+		{
+			from.options[selectedArray[i]] = null;
+		}
+		
+		sortSelect(to);
+		
+//		var len = to.options.length
+//		to.options[to.options.length] = new Option(len, len, false, false)
+	}
+	
+	function onSumbit(t)
+	{
+		var i;
+		for (i = 0; i < t.options.length; i++)
+		{
+			t.options[i].selected = true;
+		}
+		
+		t.form.submit();
+	}
+</script>
+
+<table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border-collapse: collapse; padding: 0px; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
+    <tbody>
+      <tr>
+        <td>
+        	<%= render "header" %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        	<% if @research != nil %>
+	        	<%= link_to 'Вернуться к информации об исследовании', :controller => "science", :action => "research_info", :key => @research["project_key"], :id => @research["id"] %>
+	        	<br/></br/>
+				<%= form_tag(:action => "research_members_action") do %>
+				<%= hidden_field_tag 'id', @research["id"] %>  
+			    <table cellpadding="5" style="border-collapse: collapse; display: table;" class=" htmtableborders"> 
+			      <tbody>
+			        <tr>
+			        	<td align=center>Участники проекта</td>
+			        	<td align=center>&nbsp;</td>
+			        	<td align=center>Участники исследования</td>
+			        </tr>
+			        <tr>
+			        	<td align=center><%= select_tag("project_list", options_from_collection_for_select(@project_members, "id", "name"), :size => 10, :multiple => true) %></td>
+			        	<td align=center>
+				        	<input type="button" id="right" name="right" value=">>" onclick='moveItems(document.getElementById("project_list"), document.getElementById("research_list"))' /><br />
+				        	<input type="button" id="left" name="left" value="<<" onclick='moveItems(document.getElementById("research_list"), document.getElementById("project_list"))' /><br />
+			        	</td>
+			        	<td align=center><%= select_tag("research_list", options_from_collection_for_select(@research_members, "id", "name"), :size => 10, :multiple => true) %></td>
+			        </tr>
+			      </tbody> 
+			    </table>
+			    <input type="button" id="commit" name="commit" value="Сохранить" onclick='onSumbit(document.getElementById("research_list"))' />
+	        	<% end %>
+			<% end %> 
+		</td>
+      </tr>
+    </tbody>
+</table>

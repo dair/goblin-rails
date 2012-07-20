@@ -1,0 +1,52 @@
+<table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border-collapse: collapse; padding: 0px; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
+    <tbody>
+      <tr>
+        <td>
+        	<%= render "header" %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        	<% if @research != nil %>
+	        	<%= link_to 'Вернуться к информации о проекте', :controller => "science", :action => "project_info", :key => @research["project_key"] %>
+	        	<% if @editable %> 
+	        		&nbsp;|&nbsp;<%= link_to 'Редактировать информацию об исследовании', :controller => "science", :action => "research_edit", :id => @research["id"] %>
+	        		&nbsp;|&nbsp;<%= link_to 'Редактировать исследовательскую группу', :controller => "science", :action => "research_members_edit", :id => @research["id"] %> 
+	        	<% end %>
+        	<br /><br />
+			    <table border=1 cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
+			      <tbody>
+			        <tr>
+			          <td style="text-align: right; vertical-align: top; width: 15%">Код проекта:</td> 
+			          <td style="text-align: left; vertical-align: top;"><%= @research["project_key"] %></td> 
+			        </tr> 
+			        <tr>
+			          <td style="text-align: right; vertical-align: top; width: 15%">Название исследования:</td> 
+			          <td style="text-align: left; vertical-align: top;"><%= @research["name"] %></td> 
+			        </tr> 
+			        <tr>
+			          <td style="text-align: right; vertical-align: top; width: 15%">Баланс исследования:</td> 
+			          <td style="text-align: left; vertical-align: top;">$<%= @research["balance"] %></td> 
+			        </tr> 
+			        <tr>
+			          <td style="text-align: right; vertical-align: top; width: 15%">Описание исследования:</td> 
+			          <td style="text-align: left; vertical-align: top;">
+			            <%=raw sanitize(simple_format(@research["description"]), :tags => %w(br p i b) ) %> 
+			          </td> 
+			        </tr> 
+			        <tr> 
+			          <td style="text-align: right; vertical-align: top; width: 15%">Исследовательская группа:</td> 
+			          <td style="text-align: left; vertical-align: top;">
+			            <%= @members.join(", ")  %> 
+			          </td> 
+			        </tr> 
+			      </tbody> 
+			    </table>
+			    
+			<% else %>
+				<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
+			<% end %>
+		</td>
+      </tr>
+    </tbody>
+</table>

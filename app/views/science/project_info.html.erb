@@ -17,10 +17,18 @@
 			    <table border=1 cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
 			      <tbody>
 			        <tr>
+			          <td style="text-align: right; vertical-align: top; width: 15%">Код проекта:</td> 
+			          <td style="text-align: left; vertical-align: top;"><%= @project["key"] %></td> 
+			        </tr> 
+			        <tr>
 			          <td style="text-align: right; vertical-align: top; width: 15%">Название проекта:</td> 
 			          <td style="text-align: left; vertical-align: top;"><%= @project["name"] %></td> 
 			        </tr> 
-			        <tr> 
+			        <tr>
+			          <td style="text-align: right; vertical-align: top; width: 15%">Баланс проекта:</td> 
+			          <td style="text-align: left; vertical-align: top;">$<%= @project["money"] %></td> 
+			        </tr> 
+			        <tr>
 			          <td style="text-align: right; vertical-align: top; width: 15%">Описание проекта:</td> 
 			          <td style="text-align: left; vertical-align: top;">
 			            <%=raw sanitize(simple_format(@project["description"]), :tags => %w(br p i b) ) %> 
@@ -33,8 +41,35 @@
 			            <%= @members[1..@members.size].join(", ")  %> 
 			          </td> 
 			        </tr> 
+			        <% if @research_list and @research_list.size > 0 %>
+			        <tr> 
+			        </tr>
+			        <% end %> 
 			      </tbody> 
 			    </table>
+			    <br /><br />
+			    <% if @editable %> <%= link_to "Начать новое исследование", :action => "research_new", :key => @project["key"] %><br /><% end %>
+			   Исследования:<br /> 
+			          	<table border=1 style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders">
+			          		<tr>
+			          			<td><center><b>Название исследования</b></center></td>
+			          			<td width=10%><center><b>Баланс исследования</b></center></td>
+			          			<td><center><b>Состояние</b></center></td>
+			          		</tr>
+			          		<% for research in @research_list %>
+			          		<tr>
+			          			<td><%= link_to research["name"], :action => "research_info", :id => research["id"], :key => @project["key"] %></td>
+			          			<td align=right><tt><%= research["balance"] %>&nbsp;</tt></td>
+			          			<td><%=
+			          				@status = research["status"] 
+			          				render "research_status" %>
+			          			</td>
+			          		</tr>
+			          			
+			          		<% end %>
+			          	</table>
+			          </td> 
+
 			    
 	        	<% if @editable %> 
 				    

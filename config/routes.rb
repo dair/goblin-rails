@@ -12,6 +12,15 @@ GoblinRails::Application.routes.draw do
   post "science/project_write"
   post "science/members_action"
   post "science/members_add"
+  get "science/research_info"
+  get "science/project_new"
+  get "science/research_new"
+  get "science/research_edit"
+  get "science/research_members_edit"
+  post "science/research_write"
+  
+  post "science/research_members_add"
+  post "science/research_members_action"
   
   # The priority is based upon order of creation:
   # first created -> highest priority.

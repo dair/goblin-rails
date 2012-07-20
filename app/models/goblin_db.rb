@@ -29,6 +29,18 @@ class GoblinDb < ActiveRecord::Base
     return rows
   end
   
+  def self.getProjectsPersonIn(id)
+    rows = connection.select_all(%Q{select p.key, p.name, p.description, p.money from project p, project_team t 
+      where t.person_id = #{sanitize(id)} and t.status in ('A', 'L') and p.status='A' and t.project_key = p.key order by name asc})
+    
+    for row in rows
+      row["key"] = Integer(row["key"])
+      row["money"] = Integer(row["money"])
+    end
+    
+    return rows
+  end
+  
   def self.getProjectMembers(key)
     rows = connection.select_all(%Q{select p.id, p.name, t.status from person p, project_team t 
       where t.project_key = #{sanitize(key)} and
@@ -136,11 +148,13 @@ class GoblinDb < ActiveRecord::Base
                         values (#{sanitize(key)}, #{sanitize(person_id)}, 'A', now(), now())")
   end  
 
+###############################################################################  
   def self.removePersonFromProject(person_id, key)
     connection.update("UPDATE project_team set status='H', updated_at = now() where
                        project_key = #{sanitize(key)} and person_id = #{sanitize(person_id)}")
   end
   
+###############################################################################  
   def self.passLeadershipToPersonForProject(person_id, key)
     transaction do
       connection.update("UPDATE project_team set status='A', updated_at = now() where
@@ -148,6 +162,82 @@ class GoblinDb < ActiveRecord::Base
       connection.update("UPDATE project_team set status='L', updated_at = now() where
                          project_key = #{sanitize(key)} and person_id = #{sanitize(person_id)} and status='A'")
     end
-  end  
-end
+  end
+  
+###############################################################################  
+  def self.getProjectResearchList(key)
+    rows = connection.select_all(%Q{select id, balance, name, status from research where project_key = #{sanitize(key)} order by name asc})
+    for row in rows
+      row["id"] = Integer(row["id"])
+      row["balance"] = Integer(row["balance"])
+    end
+    
+    return rows
+  end
 
+###############################################################################  
+  def self.getResearchInfo(id)
+    rows = connection.select_all(%Q{select id, project_key, balance, name, description, status from research where id = #{sanitize(id)}})
+    
+    if (rows.size == 1)
+      rows[0]["id"] = Integer(rows[0]["id"])
+      rows[0]["project_key"] = Integer(rows[0]["project_key"])
+      rows[0]["balance"] = Integer(rows[0]["balance"])
+      return rows[0]
+    end
+    return nil
+  end
+  
+  def self.getResearchTeam(id)
+    rows = connection.select_all(%Q{select p.id, p.name from research_team r, person p where r.person_id = p.id and r.status = 'A' and r.research_id = #{sanitize(id)} order by p.name asc})
+    for row in rows
+      row["id"] = Integer(row["id"])
+    end
+    return rows
+  end
+  
+  def self.setResearchData(id, key, name, description)
+    if id == 0
+      connection.insert(%Q{insert into research (project_key, name, description, status, created_at, updated_at)
+        values (#{sanitize(key)}, #{sanitize(name)}, #{sanitize(description)}, 'A', now(), now() ) })
+    else
+      connection.update("update research set name = #{sanitize(name)}, description = #{sanitize(description)}, updated_at = now() where id = #{sanitize(id)}")
+    end
+  end
+  
+  def self.getResearchTeam(id)
+    rows = connection.select_all("select p.id, p.name from person p, research_team t where p.id = t.person_id and t.status = 'A' and t.research_id = #{sanitize(id)}")
+    for row in rows
+      row["id"] = Integer(row["id"])
+    end
+    return rows
+  end
+  
+  def self.setResearchTeam(id, new_team)
+    current_team_obj = getResearchTeam(id)
+    current_team = []
+    for t in current_team_obj
+      current_team.append(t["id"])
+    end
+    
+    new_team.uniq!
+    
+    to_delete = current_team - new_team
+    to_add = new_team - current_team
+    
+    puts current_team.join(",")
+    puts new_team.join(",")
+    puts to_delete.join(",")
+    puts to_add.join(",")
+    
+    transaction do
+      for pid in to_delete
+        connection.update("update research_team set status = 'H', updated_at = now() where research_id = #{sanitize(id)} and person_id = #{sanitize(pid)}")
+      end
+      
+      for pid in to_add
+        connection.insert("insert into research_team (research_id, person_id, status, created_at, updated_at) values (#{sanitize(id)}, #{sanitize(pid)}, 'A', now(), now())")
+      end
+    end
+  end
+end

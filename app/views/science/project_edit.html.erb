@@ -8,7 +8,11 @@
       <tr>
         <td>
         	<% if (not @error) %>
-	        	<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
+        		<% if @project["key"] == 0 %>
+	        		<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
+        		<% else %>
+	        		<%= link_to 'Вернуться к информации о проекте', :controller => "science", :action => "project_info", :key => @project["key"] %>
+	        	<% end %>
 				<%= form_tag(:action => "project_write") do %>
 				<%= hidden_field_tag 'key', @project["key"] %>  
 				    <table cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
