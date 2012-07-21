@@ -240,4 +240,20 @@ class GoblinDb < ActiveRecord::Base
       end
     end
   end
+  
+  def self.setResearchStatus(id, status)
+    connection.update("update research set status = #{sanitize(status)}, updated_at = now() where id = #{sanitize(id)}")
+  end
+  
+  def self.financeResearch(id, amount)
+    transaction do
+      connection.update("update project set money = money - #{sanitize(amount)} where project.status = 'A' and project.key in (select project_key from research where id = #{sanitize(id)})")
+      connection.update("update research set balance = balance + #{sanitize(amount)} where id = #{sanitize(id)}")
+    end
+  end
+  
+  def self.getResearchEntries(id)
+    rows = connection.select_all("select r.entry, p.name from research_entry r, person p where r.research_id = #{sanitize(id)} and r.person_id = p.id order by r.created_at asc")
+    return rows
+  end
 end

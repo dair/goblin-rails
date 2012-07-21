@@ -50,15 +50,17 @@
 			    <br /><br />
 			    <% if @editable %> <%= link_to "Начать новое исследование", :action => "research_new", :key => @project["key"] %><br /><% end %>
 			   Исследования:<br /> 
-			          	<table border=1 style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders">
+			          	<table border=1 cellpadding="3" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders">
 			          		<tr>
 			          			<td><center><b>Название исследования</b></center></td>
+			          			<td><center><b>Исследовательская группа</b></center></td>
 			          			<td width=10%><center><b>Баланс исследования</b></center></td>
 			          			<td><center><b>Состояние</b></center></td>
 			          		</tr>
 			          		<% for research in @research_list %>
 			          		<tr>
 			          			<td><%= link_to research["name"], :action => "research_info", :id => research["id"], :key => @project["key"] %></td>
+			          			<td><%= research["members"] %></td>
 			          			<td align=right><tt><%= research["balance"] %>&nbsp;</tt></td>
 			          			<td><%=
 			          				@status = research["status"] 

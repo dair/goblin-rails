@@ -21,7 +21,8 @@ GoblinRails::Application.routes.draw do
   
   post "science/research_members_add"
   post "science/research_members_action"
-  
+  post "science/research_submit"
+  post "science/research_finance"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

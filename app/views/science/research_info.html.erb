@@ -1,3 +1,13 @@
+<script language="JavaScript1.1">
+	function onSend(text, form)
+	{
+		if (confirm(text))
+		{
+			form.submit();
+		}
+	}
+</script>
+
 <table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border-collapse: collapse; padding: 0px; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
     <tbody>
       <tr>
@@ -16,6 +26,12 @@
         	<br /><br />
 			    <table border=1 cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
 			      <tbody>
+			        <tr>
+			          <td style="text-align: right; vertical-align: top; width: 15%">Состояние:</td> 
+			          <td style="text-align: left; vertical-align: top;"><%=
+			          				@status = @research["status"] 
+			          				render "research_status" %></td> 
+			        </tr> 
 			        <tr>
 			          <td style="text-align: right; vertical-align: top; width: 15%">Код проекта:</td> 
 			          <td style="text-align: left; vertical-align: top;"><%= @research["project_key"] %></td> 
@@ -42,6 +58,48 @@
 			        </tr> 
 			      </tbody> 
 			    </table>
+			    <br />
+			    <% if @editable and @research["status"] == 'A' %>
+    				<%= form_tag(:action => "research_submit") do %>
+					<%= hidden_field_tag 'id', @research["id"] %>  
+			    	<input type="button" id="send" name="send" value="Отправить на рассмотрение научной комиссии" onclick='onSend("Отправить исследование на рассмотрение научной комиссии?", this.form)' /><br />
+			    	<% end %>
+			    <% end %>
+			    
+			    <% if @research["status"] == '$' and @research["balance"]< 0 and @project["money"] + @research["balance"] >= 0 %>
+    				<%= form_tag(:action => "research_finance") do %>
+					<%= hidden_field_tag 'id', @research["id"] %>
+					<%= hidden_field_tag 'balance', @research["balance"] %>
+			    	<input type="button" id="finance" name="finance" value="Финансировать исследование" onclick='onSend("Профинансировать исследование полностью на сумму $" + <%= @research["balance"] %>, this.form)' /><br />
+			    	<% end %>
+			    <% end %>
+			    
+			    <% if @research["status"] == 'S' %>
+    				<%= form_tag(:action => "research_add_entry") do %>
+					<%= hidden_field_tag 'id', @research["id"] %>
+					<%= submit_tag("Добавить информацию") %>
+			    	<% end %>
+			    <% end %>
+			    
+			    <% if @entries != nil and @entries.size > 0 %>
+			    	<br />
+			    	Ход исследования:<br />
+			    	<% for @entry in @entries %>
+					    <table border=1 cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
+					      <tbody>
+					        <tr>
+					        	<td align=left><b><%= @entry["name"] %></b></td>
+					        </tr>
+					        <tr>
+					        	<td align=left>
+					        		<%=raw sanitize(simple_format(@entry["text"]), :tags => %w(br p i b) ) %>
+								</td>
+					        </tr>
+					      </tbody>
+					    </table>
+					    <br />
+			        <% end %>
+			    <% end %>
 			    
 			<% else %>
 				<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>

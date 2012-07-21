@@ -177,6 +177,12 @@ class ScienceController < ApplicationController
       end
       
       @research_list = GoblinDb.getProjectResearchList(key)
+      for research in @research_list
+        id = id0(research["id"])
+        team = GoblinDb.getResearchTeam(id)
+        team_names = team.map { |i| i["name"] }.join(", ")
+        research["members"] = team_names
+      end
     end
     
     if @error
@@ -296,13 +302,18 @@ class ScienceController < ApplicationController
     @research = research
     team = GoblinDb.getResearchTeam(id)
     @members = []
+    member_ids = []
     for t in team
+      member_ids.append(t["id"])
       @members.append(t["name"])
     end
     
     leader_id = GoblinDb.getProjectLeader(key)
     @editable = (leader_id == session[:userid] and research["status"] == 'A')
+    @addable = (member_ids.index(session[:userid]) != nil) and (research["status"] == 'S')
+    @project = GoblinDb.getProjectInfo(key)
     
+    @entries = GoblinDb.getResearchEntries(id)
   end
   
 ##################################################################################
@@ -425,6 +436,7 @@ class ScienceController < ApplicationController
     end
   end
   
+##################################################################################
   def research_members_action
     if failLogin()
       return
@@ -444,6 +456,44 @@ class ScienceController < ApplicationController
       t = id0(t)
     end
     GoblinDb.setResearchTeam(id, new_team)
+    
+    redirect_to :action => "research_info", :id => id, :key => key
+  end
+
+##################################################################################
+  def research_submit
+    if failLogin()
+      return
+    end
+    id = id0(params[:id])
+    research = GoblinDb.getResearchInfo(id)
+    key = 0
+    if (research != nil)
+      key = research["project_key"]
+    end
+    if failProjectEditPermission(key)
+      return
+    end
+    
+    GoblinDb.setResearchStatus(id, 'P')
+    redirect_to :action => "research_info", :id => id, :key => key
+  end
+  
+##################################################################################
+  def research_finance
+    if failLogin()
+      return
+    end
+    id = id0(params[:id])
+    research = GoblinDb.getResearchInfo(id)
+    key = 0
+    if (research != nil)
+      key = research["project_key"]
+    end
+    if failProjectEditPermission(key)
+      return
+    end
+    
     
     redirect_to :action => "research_info", :id => id, :key => key
   end
