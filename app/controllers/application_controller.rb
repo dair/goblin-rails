@@ -25,8 +25,15 @@ class ApplicationController < ActionController::Base
     
     if (ret)
       session[:userid] = id
-      session[:username] = GoblinDb.getPersonName(id)
-      redirect_to :action => "main"
+      p = GoblinDb.getPerson(id)
+      session[:username] = p["name"]
+      session[:userstatus] = p["status"]
+      
+      if p["status"] == 'A'
+        redirect_to :action => "main"
+      elsif p["status"] == 'M'
+        redirect_to :action => "master_main"
+      end
     else
       session[:fail] = true
       session[:userid] = nil

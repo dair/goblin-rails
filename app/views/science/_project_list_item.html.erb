@@ -1,5 +1,7 @@
 <tr>
     <td style="border: 1px dotted #000000;" width="10%"><%= link_to @item["key"], :action => "project_info", :key => @item["key"] %></td>
     <td style="border: 1px dotted #000000;"><%= @item["name"] %></td>
+    <% if @item["money"] %>
     <td style="border: 1px dotted #000000;" width="10%" align=right><tt><%= @item["money"] %></tt></td>
+    <% end %>
 </tr>

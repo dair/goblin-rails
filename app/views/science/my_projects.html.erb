@@ -7,7 +7,7 @@
       </tr>
       <tr>
         <td>
-        	<%= link_to "Мои проекты", :action => "my_projects" %>
+        	<%= link_to "Все проекты", :action => "main" %>&nbsp;|&nbsp;<%= link_to "Создать новый проект", :action => "project_new" %>
         	<table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border: 0px dotted #000000; border-collapse: collapse; padding: 0px; background-image: none; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
         		<tbody>
 	        		<tr>
@@ -15,7 +15,7 @@
 				        	<% if @projectlist.instance_of? Array and  @projectlist.count > 0 %>
 							<table cellspacing="0" cellpadding="3" align="top" style="width: 100%; border: 0px dotted #000000; border-collapse: collapse; padding: 0px; background-image: none; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
 							    <tbody>
-							    	<tr><td><b>ID</b></td><td><b>Название</b></td></tr>
+							    	<tr><td><b>ID</b></td><td><b>Название</b></td><td><b>Баланс</b></td></tr>
 				        		<% for @item in @projectlist %>
 				        			<%= render "project_list_item" %>
 								<% end %>

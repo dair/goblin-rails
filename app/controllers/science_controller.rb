@@ -47,28 +47,11 @@ class ScienceController < ApplicationController
     return false
   end
   
-  def failProjectViewPermission(key)
-    members = GoblinDb.getProjectMembers(id0(key))
-    ret = true
-    for m in members
-      if m["id"] == session[:userid]
-        ret = false
-      end
-    end
-    
-    if (ret)
-      addError("Недостаточно прав для просмотра данного проекта")
-      redirect_to :action => "main"
-    end
-    
-    return ret
-  end
-  
   def failProjectEditPermission(key)
     leader_id = GoblinDb.getProjectLeader(id0(key))
     if (leader_id != session[:userid])
       addError("Недостаточно прав для редактирования данного проекта")
-      redirect_to :action => "main"
+      redirect_to :action => "my_projects"
       return true
     end
     
@@ -97,6 +80,16 @@ class ScienceController < ApplicationController
     end
     
     @subtitle = 'Список проектов'
+    @projectlist = GoblinDb.getProjects()
+  end
+
+###################################################################
+  def my_projects
+    if failLogin()
+      return
+    end
+    
+    @subtitle = 'Список моих проектов'
     @projectlist = GoblinDb.getProjectsPersonIn(session[:userid])
   end
   
@@ -134,7 +127,7 @@ class ScienceController < ApplicationController
     
     GoblinDb.editProject(key, params[:name], params[:description], session[:userid])
     
-    redirect_to :action => "main"    
+    redirect_to :action => "my_projects"    
   end
   
 ###################################################################
@@ -160,7 +153,7 @@ class ScienceController < ApplicationController
 ###################################################################
   def project_info
     key = id0(params[:key])
-    if failLogin() or failProjectViewPermission(key)
+    if failLogin()
       return
     end
     
@@ -295,7 +288,7 @@ class ScienceController < ApplicationController
     end
     
     key = id0(research["project_key"])
-    if failLogin() or failProjectViewPermission(key)
+    if failLogin()
       return
     end
     
@@ -496,5 +489,10 @@ class ScienceController < ApplicationController
     
     
     redirect_to :action => "research_info", :id => id, :key => key
+  end
+  
+##################################################################################
+  def master_main
+    
   end
 end

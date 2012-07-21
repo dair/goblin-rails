@@ -9,21 +9,32 @@ class GoblinDb < ActiveRecord::Base
     return false
   end
   
-  def self.getPersonName(id)
-    rows = connection.select_all(%Q{select name from person where id = #{sanitize(id)}})
+  def self.getPerson(id)
+    rows = connection.select_all(%Q{select name, status from person where id = #{sanitize(id)}})
     if (rows.size == 1)
-      return rows[0]["name"]
+      return rows[0]
     end
     
     return ""
   end
   
-  def self.getProjectsOwnedBy(id)
-    rows = connection.select_all(%Q{select p.key, p.name, p.description from project p, project_team t 
-      where t.person_id = #{sanitize(id)} and t.status='L' and p.status='A' and t.project_key = p.key})
+  def self.getProjects
+    rows = connection.select_all(%Q{select key, name, description from project where status='A' order by created_at asc})
     
     for row in rows
       row["key"] = Integer(row["key"])
+    end
+    
+    return rows
+  end
+  
+  def self.getProjectsOwnedBy(id)
+    rows = connection.select_all(%Q{select p.key, p.name, p.description, p.money from project p, project_team t 
+      where t.person_id = #{sanitize(id)} and p.status = 'A' and t.status='L' and t.project_key = p.key})
+    
+    for row in rows
+      row["key"] = Integer(row["key"])
+      row["money"] = Integer(row["money"])
     end
     
     return rows
@@ -45,6 +56,7 @@ class GoblinDb < ActiveRecord::Base
     rows = connection.select_all(%Q{select p.id, p.name, t.status from person p, project_team t 
       where t.project_key = #{sanitize(key)} and
       t.person_id = p.id and
+      p.status = 'A' and
       t.status in ('A', 'L') order by t.status desc, p.name asc})
 
     for row in rows
@@ -71,22 +83,36 @@ class GoblinDb < ActiveRecord::Base
     return row
   end
 
+  def self.sixCount(key)
+      k = key
+      six_count = 0
+      while k > 0
+        digit = k % 10
+        if digit == 6
+          six_count = six_count + 1
+        end
+        k = k / 10
+      end
+      return six_count
+  end
+
   def self.generateKey()
     found = true
     key = 0
     begin
       key = rand(10000000..99999999)
-      
-      rows = connection.select_all(%Q{select key from project_key where key = #{sanitize(key)}})
-      
-      found = (rows.size > 0)
+      if sixCount(key) > 2
+        found = false
+      else
+        rows = connection.select_all(%Q{select key from project_key where key = #{sanitize(key)}})
+        found = (rows.size > 0)
+      end
     end while found
     
     connection.insert("INSERT INTO project_key (key) values (#{key})")
     
     return key
   end
-
 
   def self.editProject(key, name, description, personId)
     transaction do
@@ -127,11 +153,11 @@ class GoblinDb < ActiveRecord::Base
     
     rows = []
     if (personId != 0)
-      rows = connection.select_all(%Q{select id, name from person where id = #{sanitize(personId)}})
+      rows = connection.select_all(%Q{select id, name from person where id = #{sanitize(personId)} and status='A'})
     end
     
     if (rows.size == 0)
-      rows = connection.select_all(%Q{select id, name from person where name = #{sanitize(personName)}})
+      rows = connection.select_all(%Q{select id, name from person where name = #{sanitize(personName)} and status='A'})
     end
     
     if rows.size > 0
@@ -189,7 +215,7 @@ class GoblinDb < ActiveRecord::Base
   end
   
   def self.getResearchTeam(id)
-    rows = connection.select_all(%Q{select p.id, p.name from research_team r, person p where r.person_id = p.id and r.status = 'A' and r.research_id = #{sanitize(id)} order by p.name asc})
+    rows = connection.select_all(%Q{select p.id, p.name from research_team r, person p where r.person_id = p.id and r.status = 'A' and p.status = 'A' and r.research_id = #{sanitize(id)} order by p.name asc})
     for row in rows
       row["id"] = Integer(row["id"])
     end
@@ -203,14 +229,6 @@ class GoblinDb < ActiveRecord::Base
     else
       connection.update("update research set name = #{sanitize(name)}, description = #{sanitize(description)}, updated_at = now() where id = #{sanitize(id)}")
     end
-  end
-  
-  def self.getResearchTeam(id)
-    rows = connection.select_all("select p.id, p.name from person p, research_team t where p.id = t.person_id and t.status = 'A' and t.research_id = #{sanitize(id)}")
-    for row in rows
-      row["id"] = Integer(row["id"])
-    end
-    return rows
   end
   
   def self.setResearchTeam(id, new_team)
@@ -254,6 +272,15 @@ class GoblinDb < ActiveRecord::Base
   
   def self.getResearchEntries(id)
     rows = connection.select_all("select r.entry, p.name from research_entry r, person p where r.research_id = #{sanitize(id)} and r.person_id = p.id order by r.created_at asc")
+    return rows
+  end
+  
+  def self.getResearchListForMaster
+    rows = connection.select_all("select id, project_key, name from research where status = 'P' order by updated_at asc")
+    for row in rows
+      row["id"] = Integer(row["id"])
+      row["project_key"] = Integer(row["project_key"])
+    end
     return rows
   end
 end

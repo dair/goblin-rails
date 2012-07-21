@@ -8,7 +8,7 @@
       <tr>
         <td>
         	<% if (not @error) %>
-	        	<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
+	        	<%= link_to 'Вернуться к списку моих проектов', :controller => "science", :action => "my_projects" %>
 	        	<% if @editable %> 
 	        		&nbsp;|&nbsp;<%= link_to 'Редактировать информацию о проекте', :controller => "science", :action => "project_edit", :key => @project["key"] %>
 	        		&nbsp;|&nbsp;<%= link_to 'Редактировать проектную группу', :controller => "science", :action => "members_edit", :key => @project["key"] %> 
@@ -37,8 +37,10 @@
 			        <tr> 
 			          <td style="text-align: right; vertical-align: top; width: 15%">Проектная группа:</td> 
 			          <td style="text-align: left; vertical-align: top;">
-			          	<b><%= @members[0] %></b><%= ", " if @members.size > 1 %>
-			            <%= @members[1..@members.size].join(", ")  %> 
+			          	<% if @members.instance_of? Array and @members.size > 0 %>
+				          	<b><%= @members[0] %></b><%= ", " if @members.size > 1 %>
+			            	<%= @members[1..@members.size].join(", ")  %>
+			            <% end %> 
 			          </td> 
 			        </tr> 
 			        <% if @research_list and @research_list.size > 0 %>
