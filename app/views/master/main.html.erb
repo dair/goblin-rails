@@ -1,0 +1,24 @@
+<table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border: 0px dotted #000000; border-collapse: collapse; padding: 0px; background-image: none; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
+	<tbody>
+		<tr>
+			<td>
+	        	<% if @research_list.instance_of? Array and  @research_list.count > 0 %>
+				<table cellspacing="0" cellpadding="3" align="top" style="width: 100%; border: 1px dotted #000000;" frame="void" rules="none" class=" htmtableborders">
+				    <tbody>
+				    	<tr><b>Название</b></td></tr>
+	        		<% for @item in @research_list %>
+	        		
+	        		<tr>
+	        			<td><%= link_to @item["name"], :action => "review", :id => @item["id"] %></td>
+	        		</tr>
+	        		
+					<% end %>
+	        		</tbody>
+	     		</table>
+	        	<% else %>
+	        		<font color="red" size=+2>Нет заявок, можно пока бухать</font>
+	        	<% end %>
+        	</td>
+		</tr>
+	</tbody>
+</table>

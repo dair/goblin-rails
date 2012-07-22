@@ -1,0 +1,16 @@
+<%= link_to "Исследования к рассмотрению", :action => "main" %>
+<br /><br />
+<%= render "project_table" %>
+<br />
+Исследования:
+<% for @research in @research_list %>
+	<br>
+	<% if @research["status"] == 'P' %>
+		<div style="background-color:#FFDF8D">
+	<% end %>
+	<%= render "research_table" %>
+	<% if @research["status"] == 'P' %>
+		<%= link_to "Рассмотреть", :action => "review_research", :id => @research["id"] %>
+		</div>
+	<% end %>
+<% end %>

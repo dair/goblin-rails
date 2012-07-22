@@ -18,59 +18,20 @@ end
 class ScienceController < ApplicationController
   @password_fail = false
   
-  def addError(error)
-    if !flash[:last_error]
-      flash[:last_error] = []
-    end
-    flash[:last_error].append(error)
-  end
-  
-  def id0(id)
-    key = 0
-    begin
-      if (id)
-        key = Integer(id)
-      end
-    rescue ArgumentError
-      key = 0
-    end
-    return key
-  end
-  
-  def failLogin
-    if (not session[:userid])
-      addError("Вход не выполнен")
-      redirect_to :action => "index"
-      return true
-    end
-    @username = session[:username]
-    return false
-  end
   
   def failProjectEditPermission(key)
+    if (session[:userstatus] == 'M')
+      return false
+    end
+    
     leader_id = GoblinDb.getProjectLeader(id0(key))
-    if (leader_id != session[:userid])
+    if (leader_id != session[:userid]) 
       addError("Недостаточно прав для редактирования данного проекта")
       redirect_to :action => "my_projects"
       return true
     end
     
     return false
-  end
-  
-  def setDefaultVars
-    if (flash[:last_error])
-      @last_error = flash[:last_error].join(", ")
-    end
-    
-    puts "=========================================================="
-    puts @last_error
-    puts "=========================================================="
-  end
-  
-  def render(options = nil, extra_options = {}, &block)
-    setDefaultVars()
-    super(options, extra_options, &block)
   end
   
 ###################################################################
@@ -131,26 +92,6 @@ class ScienceController < ApplicationController
   end
   
 ###################################################################
-  def self.membersArray(key)
-    team = GoblinDb.getProjectMembers(key)
-    leader = nil
-    members = Array.new
-    for member in team
-      if member["status"] == "L"
-        leader = member["name"]
-      else
-        members.append(member["name"])
-      end
-    end
-    members = members.sort
-    if leader != nil
-      members.prepend(leader)
-    end
-    
-    return members
-  end
-  
-###################################################################
   def project_info
     key = id0(params[:key])
     if failLogin()
@@ -166,20 +107,19 @@ class ScienceController < ApplicationController
         leader_id = GoblinDb.getProjectLeader(key)
         
         @editable = (leader_id == session[:userid])
-        @members = ScienceController.membersArray(key)
+        @project["members"] = ScienceController.membersArray(key)
       end
       
       @research_list = GoblinDb.getProjectResearchList(key)
       for research in @research_list
         id = id0(research["id"])
-        team = GoblinDb.getResearchTeam(id)
-        team_names = team.map { |i| i["name"] }.join(", ")
+        team = ApplicationController.researchMembersArray(id)
+        team_names = team.join(", ")
         research["members"] = team_names
       end
     end
     
     if @error
-      @members = []
       @project = {}
       @editable = false  
     end 
@@ -294,11 +234,11 @@ class ScienceController < ApplicationController
     
     @research = research
     team = GoblinDb.getResearchTeam(id)
-    @members = []
+    @research["members"] = []
     member_ids = []
     for t in team
       member_ids.append(t["id"])
-      @members.append(t["name"])
+      @research["members"].append(t["name"])
     end
     
     leader_id = GoblinDb.getProjectLeader(key)
@@ -493,6 +433,5 @@ class ScienceController < ApplicationController
   
 ##################################################################################
   def master_main
-    
   end
 end

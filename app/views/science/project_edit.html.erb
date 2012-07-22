@@ -1,44 +1,31 @@
-<table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border-collapse: collapse; padding: 0px; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
-    <tbody>
-      <tr>
-        <td>
-        	<%= render "header" %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-        	<% if (not @error) %>
-        		<% if @project["key"] == 0 %>
-	        		<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
-        		<% else %>
-	        		<%= link_to 'Вернуться к информации о проекте', :controller => "science", :action => "project_info", :key => @project["key"] %>
-	        	<% end %>
-				<%= form_tag(:action => "project_write") do %>
-				<%= hidden_field_tag 'key', @project["key"] %>  
-				    <table cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
-				      <tbody>
-				        <tr>
-				          <td style="text-align: right; vertical-align: top;">Название проекта:</td> 
-				          <td style="text-align: left; vertical-align: top;"><%= text_field_tag("name", @project["name"], :size => 120) %></td> 
-				        </tr> 
-				        <tr> 
-				          <td style="text-align: right; vertical-align: top;">Описание проекта:</td> 
-				          <td style="text-align: left; vertical-align: top;">
-				          	<%=  %> 
-				            <%= text_area_tag("description", @project["description"], :size => "90x10") %> 
-				          </td> 
-				        </tr> 
-				        <tr> 
-				          <td>&nbsp;</td>
-				          <td><%= submit_tag("Сохранить") %></td> 
-				        </tr>
-				      </tbody> 
-				    </table> 
-				<% end %>
-			<% else %>
-				<font size=+2 color=red>Проект не найден</font>
-			<% end %>
-		</td>
-      </tr>
-    </tbody>
-</table>
+<% if (not @error) %>
+	<% if @project["key"] == 0 %>
+		<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
+	<% else %>
+		<%= link_to 'Вернуться к информации о проекте', :controller => "science", :action => "project_info", :key => @project["key"] %>
+	<% end %>
+	<%= form_tag(:action => "project_write") do %>
+	<%= hidden_field_tag 'key', @project["key"] %>  
+	    <table cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
+	      <tbody>
+	        <tr>
+	          <td style="text-align: right; vertical-align: top;">Название проекта:</td> 
+	          <td style="text-align: left; vertical-align: top;"><%= text_field_tag("name", @project["name"], :size => 120) %></td> 
+	        </tr> 
+	        <tr> 
+	          <td style="text-align: right; vertical-align: top;">Описание проекта:</td> 
+	          <td style="text-align: left; vertical-align: top;">
+	          	<%=  %> 
+	            <%= text_area_tag("description", @project["description"], :size => "90x10") %> 
+	          </td> 
+	        </tr> 
+	        <tr> 
+	          <td>&nbsp;</td>
+	          <td><%= submit_tag("Сохранить") %></td> 
+	        </tr>
+	      </tbody> 
+	    </table> 
+	<% end %>
+<% else %>
+	<font size=+2 color=red>Проект не найден</font>
+<% end %>

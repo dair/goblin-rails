@@ -283,4 +283,14 @@ class GoblinDb < ActiveRecord::Base
     end
     return rows
   end
+  
+  def self.setResearchPriceAndStatus(id, price)
+    p = - price.abs
+    connection.update("update research set balance = #{sanitize(p)}, status = '$' where id = #{sanitize(id)}")
+  end
+  
+  def self.addResearchEntry(id, person_id, entry)
+    connection.insert("insert into research_entry (research_id, entry, person_id)
+                       values (#{sanitize(id)}, #{sanitize(entry)}, #{sanitize(person_id)})")
+  end
 end

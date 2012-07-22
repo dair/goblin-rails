@@ -9,7 +9,7 @@
           <h2><%= @subtitle %></h2>
         </td> 
         <td style="text-align: right; vertical-align: middle;"><br /> 
-          <%= form_tag(:action => "logout") do %>&nbsp;<%= @username %>&nbsp;<input type="submit" value="Выйти" name="Logout" /><% end %><br /> 
+          <%= form_tag(:controller => "application", :action => "logout") do %>&nbsp;<%= @username %>&nbsp;<input type="submit" value="Выйти" name="Logout" /><% end %><br /> 
         </td>
       </tr>
       <tr valign="center">

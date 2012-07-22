@@ -1,11 +1,12 @@
 GoblinRails::Application.routes.draw do
-  root :to => "science#index"
+  root :to => "application#index"
   
-  get "science/index"
-  post "science/login"
+#  get "science/index"
+  post "application/login"
+  post "application/logout"
+  
   get "science/main"
   get "science/my_projects"
-  post "science/logout"
   
   get "science/project_info"
   get "science/project_edit"
@@ -24,7 +25,11 @@ GoblinRails::Application.routes.draw do
   post "science/research_members_action"
   post "science/research_submit"
   post "science/research_finance"
-  get "science/master_main"
+  
+  get "master/main"
+  get "master/review"
+  get "master/review_research"
+  post "master/review_research_write"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

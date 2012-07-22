@@ -11,8 +11,21 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
-<%= yield %>
-
+	<table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border: 0px dotted #000000; border-collapse: collapse; padding: 0px; background-image: none; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
+	    <tbody>
+	      <tr>
+	        <td>
+				<% if @username %>
+		        	<%= render "header" %>
+				<% end %>
+	        </td>
+	      </tr>
+	      <tr>
+	        <td>
+				<%= yield %>
+	        </td>
+	      </tr>
+	    </tbody>
+	</table>
 </body>
 </html>

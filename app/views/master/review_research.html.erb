@@ -1,0 +1,57 @@
+<script language="JavaScript1.1">
+	function updateForm(form)
+	{
+		var len = form.is_ok.length;
+		var ok = true;
+		for (var i = 0; i < len; i++)
+		{
+			if (form.is_ok[i].checked)
+			{
+				if (form.is_ok[i].value == "ok")
+				{
+					ok = true;
+					break;
+				}
+				else if (form.is_ok[i].value == "not_ok")
+				{
+					ok = false;
+					break;
+				}
+			}
+		}
+		
+		form.price.disabled = !ok;
+		form.comment.disabled = ok;
+	}
+</script>
+
+
+<%= link_to "Исследования к рассмотрению", :action => "main" %>&nbsp;|&nbsp;<%= link_to "Информация о проекте и исследованиях", :action => "review", :id => @research["id"] %>
+<br /><br />
+<%= render "research_table" %>
+<br>
+<font size=+1>Решение "Научного совета":</font><br><br>
+<%= form_tag(:action => "review_research_write") do %>
+	<input type="radio" id="check_ok" name="is_ok" value="ok" onclick="updateForm(this.form);" />Всё хорошо, выставляем стоимость<br />
+	<input type="radio" id="check_not_ok" name="is_ok" value="not_ok" onclick="updateForm(this.form);" />Всё плохо, пишем коммент и отправляем на доработку<br />
+	<%= hidden_field_tag 'id', @research["id"] %>
+	<table>
+		<tr>
+			<td>
+				Стоимость исследования:
+			</td>
+			<td>
+				<%= text_field_tag("price", "", :size => 120, :disabled => true) %>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Комментарий:
+			</td>
+			<td>
+				<%= text_area_tag("comment", "", :size => "90x10", :disabled => true) %>
+			</td>
+		</tr>
+	</table>
+	<%= submit_tag("Послать") %>		
+<% end %>

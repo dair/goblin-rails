@@ -1,0 +1,31 @@
+    <table border=1 cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
+      <tbody>
+        <tr>
+          <td style="text-align: right; vertical-align: top; width: 15%">Код проекта:</td> 
+          <td style="text-align: left; vertical-align: top;"><%= @project["key"] %></td> 
+        </tr> 
+        <tr>
+          <td style="text-align: right; vertical-align: top; width: 15%">Название проекта:</td> 
+          <td style="text-align: left; vertical-align: top;"><%= @project["name"] %></td> 
+        </tr> 
+        <tr>
+          <td style="text-align: right; vertical-align: top; width: 15%">Баланс проекта:</td> 
+          <td style="text-align: left; vertical-align: top;">$<%= @project["money"] %></td> 
+        </tr> 
+        <tr>
+          <td style="text-align: right; vertical-align: top; width: 15%">Описание проекта:</td> 
+          <td style="text-align: left; vertical-align: top;">
+            <%=raw sanitize(simple_format(@project["description"]), :tags => %w(br p i b) ) %> 
+          </td> 
+        </tr> 
+        <tr> 
+          <td style="text-align: right; vertical-align: top; width: 15%">Проектная группа:</td> 
+          <td style="text-align: left; vertical-align: top;">
+          	<% if @project["members"].instance_of? Array and @project["members"].size > 0 %>
+	          	<b><%= @project["members"][0] %></b><%= ", " if @project["members"].size > 1 %>
+            	<%= @project["members"][1..@project["members"].size].join(", ")  %>
+            <% end %> 
+          </td> 
+        </tr> 
+      </tbody> 
+    </table>

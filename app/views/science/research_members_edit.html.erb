@@ -56,41 +56,28 @@
 	}
 </script>
 
-<table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border-collapse: collapse; padding: 0px; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
-    <tbody>
-      <tr>
-        <td>
-        	<%= render "header" %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-        	<% if @research != nil %>
-	        	<%= link_to 'Вернуться к информации об исследовании', :controller => "science", :action => "research_info", :key => @research["project_key"], :id => @research["id"] %>
-	        	<br/></br/>
-				<%= form_tag(:action => "research_members_action") do %>
-				<%= hidden_field_tag 'id', @research["id"] %>  
-			    <table cellpadding="5" style="border-collapse: collapse; display: table;" class=" htmtableborders"> 
-			      <tbody>
-			        <tr>
-			        	<td align=center>Участники проекта</td>
-			        	<td align=center>&nbsp;</td>
-			        	<td align=center>Участники исследования</td>
-			        </tr>
-			        <tr>
-			        	<td align=center><%= select_tag("project_list", options_from_collection_for_select(@project_members, "id", "name"), :size => 10, :multiple => true) %></td>
-			        	<td align=center>
-				        	<input type="button" id="right" name="right" value=">>" onclick='moveItems(document.getElementById("project_list"), document.getElementById("research_list"))' /><br />
-				        	<input type="button" id="left" name="left" value="<<" onclick='moveItems(document.getElementById("research_list"), document.getElementById("project_list"))' /><br />
-			        	</td>
-			        	<td align=center><%= select_tag("research_list", options_from_collection_for_select(@research_members, "id", "name"), :size => 10, :multiple => true) %></td>
-			        </tr>
-			      </tbody> 
-			    </table>
-			    <input type="button" id="commit" name="commit" value="Сохранить" onclick='onSumbit(document.getElementById("research_list"))' />
-	        	<% end %>
-			<% end %> 
-		</td>
-      </tr>
-    </tbody>
-</table>
+<% if @research != nil %>
+	<%= link_to 'Вернуться к информации об исследовании', :controller => "science", :action => "research_info", :key => @research["project_key"], :id => @research["id"] %>
+	<br/></br/>
+	<%= form_tag(:action => "research_members_action") do %>
+	<%= hidden_field_tag 'id', @research["id"] %>  
+    <table cellpadding="5" style="border-collapse: collapse; display: table;" class=" htmtableborders"> 
+      <tbody>
+        <tr>
+        	<td align=center>Участники проекта</td>
+        	<td align=center>&nbsp;</td>
+        	<td align=center>Участники исследования</td>
+        </tr>
+        <tr>
+        	<td align=center><%= select_tag("project_list", options_from_collection_for_select(@project_members, "id", "name"), :size => 5, :multiple => true) %></td>
+        	<td align=center>
+	        	<input type="button" id="right" name="right" value=">>" onclick='moveItems(document.getElementById("project_list"), document.getElementById("research_list"))' /><br />
+	        	<input type="button" id="left" name="left" value="<<" onclick='moveItems(document.getElementById("research_list"), document.getElementById("project_list"))' /><br />
+        	</td>
+        	<td align=center><%= select_tag("research_list", options_from_collection_for_select(@research_members, "id", "name"), :size => 5, :multiple => true) %></td>
+        </tr>
+      </tbody> 
+    </table>
+    <input type="button" id="commit" name="commit" value="Сохранить" onclick='onSumbit(document.getElementById("research_list"))' />
+	<% end %>
+<% end %> 

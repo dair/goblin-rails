@@ -1,88 +1,41 @@
-<table cellspacing="0" cellpadding="0" align="top" style="width: 100%; border-collapse: collapse; padding: 0px; float: none; display: table;" frame="void" rules="none" class=" htmtableborders">
-    <tbody>
-      <tr>
-        <td>
-        	<%= render "header" %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-        	<% if (not @error) %>
-	        	<%= link_to 'Вернуться к списку моих проектов', :controller => "science", :action => "my_projects" %>
-	        	<% if @editable %> 
-	        		&nbsp;|&nbsp;<%= link_to 'Редактировать информацию о проекте', :controller => "science", :action => "project_edit", :key => @project["key"] %>
-	        		&nbsp;|&nbsp;<%= link_to 'Редактировать проектную группу', :controller => "science", :action => "members_edit", :key => @project["key"] %> 
-	        	<% end %>
-        	<br /><br />
-			    <table border=1 cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
-			      <tbody>
-			        <tr>
-			          <td style="text-align: right; vertical-align: top; width: 15%">Код проекта:</td> 
-			          <td style="text-align: left; vertical-align: top;"><%= @project["key"] %></td> 
-			        </tr> 
-			        <tr>
-			          <td style="text-align: right; vertical-align: top; width: 15%">Название проекта:</td> 
-			          <td style="text-align: left; vertical-align: top;"><%= @project["name"] %></td> 
-			        </tr> 
-			        <tr>
-			          <td style="text-align: right; vertical-align: top; width: 15%">Баланс проекта:</td> 
-			          <td style="text-align: left; vertical-align: top;">$<%= @project["money"] %></td> 
-			        </tr> 
-			        <tr>
-			          <td style="text-align: right; vertical-align: top; width: 15%">Описание проекта:</td> 
-			          <td style="text-align: left; vertical-align: top;">
-			            <%=raw sanitize(simple_format(@project["description"]), :tags => %w(br p i b) ) %> 
-			          </td> 
-			        </tr> 
-			        <tr> 
-			          <td style="text-align: right; vertical-align: top; width: 15%">Проектная группа:</td> 
-			          <td style="text-align: left; vertical-align: top;">
-			          	<% if @members.instance_of? Array and @members.size > 0 %>
-				          	<b><%= @members[0] %></b><%= ", " if @members.size > 1 %>
-			            	<%= @members[1..@members.size].join(", ")  %>
-			            <% end %> 
-			          </td> 
-			        </tr> 
-			        <% if @research_list and @research_list.size > 0 %>
-			        <tr> 
-			        </tr>
-			        <% end %> 
-			      </tbody> 
-			    </table>
-			    <br /><br />
-			    <% if @editable %> <%= link_to "Начать новое исследование", :action => "research_new", :key => @project["key"] %><br /><% end %>
-			   Исследования:<br /> 
-			          	<table border=1 cellpadding="3" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders">
-			          		<tr>
-			          			<td><center><b>Название исследования</b></center></td>
-			          			<td><center><b>Исследовательская группа</b></center></td>
-			          			<td width=10%><center><b>Баланс исследования</b></center></td>
-			          			<td><center><b>Состояние</b></center></td>
-			          		</tr>
-			          		<% for research in @research_list %>
-			          		<tr>
-			          			<td><%= link_to research["name"], :action => "research_info", :id => research["id"], :key => @project["key"] %></td>
-			          			<td><%= research["members"] %></td>
-			          			<td align=right><tt><%= research["balance"] %>&nbsp;</tt></td>
-			          			<td><%=
-			          				@status = research["status"] 
-			          				render "research_status" %>
-			          			</td>
-			          		</tr>
-			          			
-			          		<% end %>
-			          	</table>
-			          </td> 
+<% if (not @error) %>
+	<%= link_to 'Вернуться к списку моих проектов', :controller => "science", :action => "my_projects" %>
+	<% if @editable %> 
+		&nbsp;|&nbsp;<%= link_to 'Редактировать информацию о проекте', :controller => "science", :action => "project_edit", :key => @project["key"] %>
+		&nbsp;|&nbsp;<%= link_to 'Редактировать проектную группу', :controller => "science", :action => "members_edit", :key => @project["key"] %> 
+	<% end %>
+<br /><br />
+	<%= render "project_table" %>
+    <br /><br />
+    <% if @editable %> <%= link_to "Начать новое исследование", :action => "research_new", :key => @project["key"] %><br /><% end %>
+   Исследования:<br /> 
+          	<table border=1 cellpadding="3" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders">
+          		<tr>
+          			<td><center><b>Название исследования</b></center></td>
+          			<td><center><b>Исследовательская группа</b></center></td>
+          			<td width=10%><center><b>Баланс исследования</b></center></td>
+          			<td><center><b>Состояние</b></center></td>
+          		</tr>
+          		<% for research in @research_list %>
+          		<tr>
+          			<td><%= link_to research["name"], :action => "research_info", :id => research["id"], :key => @project["key"] %></td>
+          			<td><%= research["members"] %></td>
+          			<td align=right><tt><%= research["balance"] %>&nbsp;</tt></td>
+          			<td><%=
+          				@status = research["status"] 
+          				render "research_status" %>
+          			</td>
+          		</tr>
+          			
+          		<% end %>
+          	</table>
+          </td> 
 
-			    
-	        	<% if @editable %> 
-				    
-				<% end %> 
-			<% else %>
-				<font size=+2 color=red>Проект не найден</font><br />
-				<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
-			<% end %>
-		</td>
-      </tr>
-    </tbody>
-</table>
+    
+	<% if @editable %> 
+	    
+	<% end %> 
+<% else %>
+	<font size=+2 color=red>Проект не найден</font><br />
+	<%= link_to 'Вернуться к списку проектов', :controller => "science", :action => "main" %>
+<% end %>
