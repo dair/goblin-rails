@@ -139,6 +139,8 @@ class GoblinDb < ActiveRecord::Base
         connection.insert(%Q{insert into project_team (project_key, person_id, status, created_at, updated_at)
           values (#{sanitize(key)}, #{sanitize(personId)}, 'L', now(), now())})
       end
+      
+      return key
     end
   end
 

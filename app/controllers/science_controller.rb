@@ -59,7 +59,7 @@ class ScienceController < ApplicationController
     if failLogin()
       return
     end
-    
+    @subtitle = 'Новый проект'
     @project = Hash.new
     @project["key"] = 0
     @project["name"] = ""
@@ -74,6 +74,7 @@ class ScienceController < ApplicationController
       return
     end
     
+    @subtitle = 'Редактирование проекта'
     @project = GoblinDb.getProjectInfo(key) 
     @error = (@project == nil)
   end
@@ -86,9 +87,9 @@ class ScienceController < ApplicationController
       return
     end
     
-    GoblinDb.editProject(key, params[:name], params[:description], session[:userid])
+    key = GoblinDb.editProject(key, params[:name], params[:description], session[:userid])
     
-    redirect_to :action => "my_projects"    
+    redirect_to :action => "project_info", :key => key    
   end
   
 ###################################################################
@@ -98,6 +99,7 @@ class ScienceController < ApplicationController
       return
     end
     
+    @subtitle = 'Информация о проекте'
     if key == 0
       @error = true
     else
@@ -151,6 +153,7 @@ class ScienceController < ApplicationController
       @project = {}
       @project["key"] = key
     end
+    @subtitle = 'Участники проекта'
   end
   
   def members_action
@@ -247,6 +250,8 @@ class ScienceController < ApplicationController
     @project = GoblinDb.getProjectInfo(key)
     
     @entries = GoblinDb.getResearchEntries(id)
+    @subtitle = 'Исследование'
+
   end
   
 ##################################################################################
@@ -276,6 +281,7 @@ class ScienceController < ApplicationController
     end
     
     @research = research
+    @subtitle = 'Редактирование данных исследования'
   end
 
 ##################################################################################
@@ -290,6 +296,7 @@ class ScienceController < ApplicationController
     @research["project_key"] = key
     @research["name"] = ""
     @research["description"] = ""
+    @subtitle = 'Новое исследование'
     render "research_edit"
   end
   
@@ -367,6 +374,8 @@ class ScienceController < ApplicationController
       info.set(i["id"], i["name"])
       @project_members.append(info)
     end
+    
+    @subtitle = 'Участники исследования'
   end
   
 ##################################################################################
@@ -469,6 +478,7 @@ class ScienceController < ApplicationController
     end
     
     @research = research
+    @subtitle = 'Добавление хода исследования'
   end
   
   def research_entry_write
@@ -508,6 +518,7 @@ class ScienceController < ApplicationController
     
     @project = GoblinDb.getProjectInfo(key) 
     @error = (@project == nil)
+    @subtitle = 'Возврат излишних средств'
   end
   
   def asset_return_write
