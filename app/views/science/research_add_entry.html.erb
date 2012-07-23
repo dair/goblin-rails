@@ -1,0 +1,26 @@
+<% if (not @error) %>
+	<% if @research["id"] == 0 %>
+		<%= link_to 'Вернуться к информации о проекте', :controller => "science", :action => "project_info", :key => @research["project_key"] %>
+	<% else %>
+		<%= link_to 'Вернуться к информации об исследовании', :controller => "science", :action => "research_info", :id => @research["id"], :key => @research["project_key"] %>
+	<% end %>
+	<%= form_tag(:action => "research_entry_write") do %>
+		<%= hidden_field_tag 'id', @research["id"] %>  
+	    <table cellpadding="5" style="width: 100%; border-collapse: collapse; display: table;" class=" htmtableborders"> 
+	      <tbody>
+	        <tr> 
+	          <td style="text-align: right; vertical-align: top;">Запись хода исследования:</td> 
+	          <td style="text-align: left; vertical-align: top;">
+	            <%= text_area_tag("entry", "", :size => "90x10") %> 
+	          </td>
+	        </tr>
+	        <tr>
+	          <td>&nbsp;</td>
+	          <td><%= submit_tag("Сохранить") %></td>
+	        </tr>
+	      </tbody> 
+	    </table> 
+	<% end %>
+<% else %>
+	<font size=+2 color=red>Мсследование не найдено</font>
+<% end %>

@@ -2,7 +2,8 @@
 	<%= link_to 'Вернуться к списку моих проектов', :controller => "science", :action => "my_projects" %>
 	<% if @editable %> 
 		&nbsp;|&nbsp;<%= link_to 'Редактировать информацию о проекте', :controller => "science", :action => "project_edit", :key => @project["key"] %>
-		&nbsp;|&nbsp;<%= link_to 'Редактировать проектную группу', :controller => "science", :action => "members_edit", :key => @project["key"] %> 
+		&nbsp;|&nbsp;<%= link_to 'Редактировать проектную группу', :controller => "science", :action => "members_edit", :key => @project["key"] %>
+		&nbsp;|&nbsp;<%= link_to 'Возврат излишних средств', :controller => "science", :action => "asset_return", :key => @project["key"] %>
 	<% end %>
 <br /><br />
 	<%= render "project_table" %>

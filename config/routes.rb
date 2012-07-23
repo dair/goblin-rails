@@ -25,6 +25,11 @@ GoblinRails::Application.routes.draw do
   post "science/research_members_action"
   post "science/research_submit"
   post "science/research_finance"
+  get "science/research_add_entry"
+  post "science/research_entry_write"
+  
+  get "science/asset_return"
+  post "science/asset_return_write"
   
   get "master/main"
   get "master/review"

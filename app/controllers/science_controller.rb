@@ -427,11 +427,114 @@ class ScienceController < ApplicationController
       return
     end
     
+    begin
+      bablo = Integer(params[:balance])
+    rescue ArgumentError
+      bablo = 0
+    end
+    
+    bablo = bablo.abs
+    
+    if (bablo + research["balance"] > 0)
+      GoblinDb.financeResearch(id, bablo)
+      GoblinDb.setResearchStatus(id, 'S')
+    end
     
     redirect_to :action => "research_info", :id => id, :key => key
   end
   
 ##################################################################################
-  def master_main
+  def research_add_entry
+    id = id0(params[:id])
+    if failLogin()
+      return
+    end
+    
+    research = GoblinDb.getResearchInfo(id)
+    team = GoblinDb.getResearchTeam(id)
+    key = 0
+    if (research != nil)
+      key = research["project_key"]
+    end
+    
+    if research["status"] != "S"
+      addError("Добавление записей возможно только на этапе работы")
+      redirect_to :action => "research_info", :id => id, :key => key
+      return
+    end
+    if team.map{|x| x["id"]}.index(session[:userid]) == nil
+      addError("Добавление записей возможно только для участников исследования")
+      redirect_to :action => "research_info", :id => id, :key => key
+      return
+    end
+    
+    @research = research
   end
+  
+  def research_entry_write
+    id = id0(params[:id])
+    if failLogin()
+      return
+    end
+    
+    research = GoblinDb.getResearchInfo(id)
+    team = GoblinDb.getResearchTeam(id)
+    
+    key = 0
+    if (research != nil)
+      key = research["project_key"]
+    end
+    
+    if research["status"] != "S"
+      addError("Добавление записей возможно только на этапе работы")
+      redirect_to :action => "research_info", :id => id, :key => key
+      return
+    end
+    if team.map{|x| x["id"]}.index(session[:userid]) == nil
+      addError("Добавление записей возможно только для участников исследования")
+      redirect_to :action => "research_info", :id => id, :key => key
+      return
+    end
+    
+    GoblinDb.addResearchEntry(id, session[:userid], params[:entry])
+    redirect_to :action => "research_info", :id => id, :key => key
+  end
+  
+  def asset_return
+    key = id0(params[:key])
+    if failLogin() or failProjectEditPermission(key)
+      return
+    end
+    
+    @project = GoblinDb.getProjectInfo(key) 
+    @error = (@project == nil)
+  end
+  
+  def asset_return_write
+    key = id0(params[:key])
+    if failLogin() or failProjectEditPermission(key)
+      return
+    end
+    @project = GoblinDb.getProjectInfo(key) 
+    
+    amount = id0(params[:amount])
+    account = id0(params[:account])
+    
+    if amount <= 0 or amount > @project["money"]
+      addError("Ошибочная сумма")
+      redirect_to :action => "asset_return", :key => key
+      return
+    end
+    
+    person = GoblinDb.getPerson(account)
+    if (person == nil)
+      addError("Ошибочный номер счёта")
+      redirect_to :action => "asset_return", :key => key
+      return
+    end
+    
+    GoblinDb.stealMoney(key, account, amount)
+    redirect_to :action => "project_info", :key => key
+  end
+  
 end

@@ -32,7 +32,7 @@
 		<%= form_tag(:action => "research_finance") do %>
 		<%= hidden_field_tag 'id', @research["id"] %>
 		<%= hidden_field_tag 'balance', @research["balance"] %>
-    	<input type="button" id="finance" name="finance" value="Финансировать исследование" onclick='onSend("Профинансировать исследование полностью на сумму $" + <%= @research["balance"] %>, this.form)' /><br />
+    	<input type="button" id="finance" name="finance" value="Финансировать исследование" onclick='onSend("Профинансировать исследование полностью на сумму $" + <%= @research["balance"].abs %>, this.form)' /><br />
     	<% end %>
     <% end %>
     
@@ -54,7 +54,7 @@
 		        </tr>
 		        <tr>
 		        	<td align=left>
-		        		<%=raw sanitize(simple_format(@entry["entry"]), :tags => %w(s i b) ) %>
+		        		<%=raw sanitize(simple_format(@entry["entry"]), :tags => %w(br s i b) ) %>
 					</td>
 		        </tr>
 		      </tbody>

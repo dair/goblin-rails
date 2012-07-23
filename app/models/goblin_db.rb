@@ -15,7 +15,7 @@ class GoblinDb < ActiveRecord::Base
       return rows[0]
     end
     
-    return ""
+    return nil
   end
   
   def self.getProjects
@@ -292,5 +292,13 @@ class GoblinDb < ActiveRecord::Base
   def self.addResearchEntry(id, person_id, entry)
     connection.insert("insert into research_entry (research_id, entry, person_id)
                        values (#{sanitize(id)}, #{sanitize(entry)}, #{sanitize(person_id)})")
+  end
+  
+  def self.stealMoney(project_key, person_id, amount)
+    transaction do
+      connection.insert("insert into money_history (sender_project_key, receiver_id, value) values(#{sanitize(project_key)}, #{sanitize(person_id)}, #{sanitize(amount)})")
+      connection.update("update project set money = money - #{sanitize(amount)} where key = #{sanitize(project_key)} and status = 'A'")
+      connection.update("update money set balance = balance + #{sanitize(amount)} where id = #{sanitize(person_id)}")
+    end
   end
 end
