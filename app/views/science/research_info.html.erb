@@ -37,7 +37,7 @@
     <% end %>
     
     <% if @research["status"] == 'S' %>
-		<%= form_tag(:action => "research_add_entry") do %>
+		<%= form_tag("research_add_entry", :method => "GET") do %>
 		<%= hidden_field_tag 'id', @research["id"] %>
 		<%= submit_tag("Добавить информацию") %>
     	<% end %>

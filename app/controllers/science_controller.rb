@@ -447,6 +447,8 @@ class ScienceController < ApplicationController
     if (bablo + research["balance"] >= 0)
       GoblinDb.financeResearch(id, bablo)
       GoblinDb.setResearchStatus(id, 'S')
+    else
+      addError("Недостаточно средств")
     end
     
     redirect_to :action => "research_info", :id => id, :key => key
