@@ -444,7 +444,7 @@ class ScienceController < ApplicationController
     
     bablo = bablo.abs
     
-    if (bablo + research["balance"] > 0)
+    if (bablo + research["balance"] >= 0)
       GoblinDb.financeResearch(id, bablo)
       GoblinDb.setResearchStatus(id, 'S')
     end
