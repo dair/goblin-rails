@@ -64,12 +64,20 @@ class MasterController < ApplicationController
       
       if price != 0
         GoblinDb.setResearchPriceAndStatus(id, price)
+        
+        if (params[:comment].strip.length > 0)
+          GoblinDb.addResearchEntry(id, session[:userid], params[:comment])
+        end
+        
         redirect_to :action => "review", :id => id
       else
         addError("С ценой что-то не то, надо проверить ещё раз")
         redirect_to :action => "review_research", :id => id
         return
       end
+      
+      
+      
     elsif (params[:is_ok] == "not_ok")
       GoblinDb.addResearchEntry(id, session[:userid], params[:comment])
       GoblinDb.setResearchStatus(id, 'A')

@@ -11,7 +11,7 @@
 	      <tbody>
 	        <tr>
 	          <td style="text-align: right; vertical-align: top;">Название исследования:</td> 
-	          <td style="text-align: left; vertical-align: top;"><%= text_field_tag("name", @research["name"], :size => 120) %></td> 
+	          <td style="text-align: left; vertical-align: top;"><%= text_field_tag("name", @research["name"], :size => 120, :maxlength => 200) %></td> 
 	        </tr> 
 	        <tr> 
 	          <td style="text-align: right; vertical-align: top;">Описание исследования:</td> 

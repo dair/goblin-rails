@@ -64,6 +64,13 @@ class ScienceController < ApplicationController
     @project["key"] = 0
     @project["name"] = ""
     @project["description"] = ""
+    if params[:name]
+      @project["name"] = params[:name]  
+    end
+    if params[:description]
+      @project["description"] = params[:description] 
+    end
+    
     render "project_edit"
   end
   
@@ -75,7 +82,17 @@ class ScienceController < ApplicationController
     end
     
     @subtitle = 'Редактирование проекта'
-    @project = GoblinDb.getProjectInfo(key) 
+    @project = GoblinDb.getProjectInfo(key)
+    if session[:project_name]
+      @project["name"] = session[:project_name]
+      session[:project_name] = nil  
+    end
+    
+    if session[:project_description]
+      @project["description"] = session[:project_description] 
+      session[:project_description] = nil  
+    end
+    
     @error = (@project == nil)
   end
   
@@ -86,6 +103,7 @@ class ScienceController < ApplicationController
     if failLogin() or (key != 0 and failProjectEditPermission(key))
       return
     end
+    
     
     key = GoblinDb.editProject(key, params[:name], params[:description], session[:userid])
     
@@ -199,6 +217,13 @@ class ScienceController < ApplicationController
       addError("Такой пользователь не найден")
     else
       mems = GoblinDb.getProjectMembers(key)
+      puts '================================================================'
+      puts mems
+      puts '================================================================'
+      puts person
+      puts '================================================================'
+      
+      
       inTeam = false
       for m in mems
         if m["id"] == person["id"]
@@ -281,6 +306,17 @@ class ScienceController < ApplicationController
     end
     
     @research = research
+    
+    if session[:research_name]
+      @research["name"] = session[:research_name]
+      session[:research_name] = nil
+    end
+    
+    if session[:research_description]
+      @research["description"] = session[:research_description]
+      session[:research_description] = nil
+    end
+    
     @subtitle = 'Редактирование данных исследования'
   end
 
@@ -296,6 +332,17 @@ class ScienceController < ApplicationController
     @research["project_key"] = key
     @research["name"] = ""
     @research["description"] = ""
+    
+    if session[:research_name]
+      @research["name"] = session[:research_name]
+      session[:research_name] = nil
+    end
+    
+    if session[:research_description]
+      @research["description"] = session[:research_description]
+      session[:research_description] = nil
+    end
+    
     @subtitle = 'Новое исследование'
     render "research_edit"
   end
@@ -319,14 +366,29 @@ class ScienceController < ApplicationController
       if research["status"] != "A"
         addError("Редактирование свойств исследования возможно только на этапе подготовки")
         redirect_to :action => "research_info", :id => id, :key => key
-      return
+        return
+      end
     end
-
-    end
+    
     if failProjectEditPermission(key)
       return
     end
-    
+  
+    name = params[:name].strip
+    desc = params[:description].strip
+    if (name.length == 0 or desc.length == 0)
+      addError("Поля, всё же, надо заполнить")
+      session[:research_name] = name
+      session[:research_description] = desc
+      
+      if (id == 0)
+        redirect_to :action => "research_new", :key => key
+      else
+        redirect_to :action => "research_edit", :id => id
+      end
+      return
+    end
+
     GoblinDb.setResearchData(id, key, params[:name], params[:description])
     if (id != 0)
       redirect_to :action => "research_info", :id => id, :project_key => key

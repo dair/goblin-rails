@@ -19,7 +19,7 @@ class GoblinDb < ActiveRecord::Base
   end
   
   def self.getProjects
-    rows = connection.select_all(%Q{select key, name, description from project where status='A' order by created_at asc})
+    rows = connection.select_all(%Q{select key, name, description from project where status='A' order by key asc})
     
     for row in rows
       row["key"] = Integer(row["key"])
@@ -30,7 +30,7 @@ class GoblinDb < ActiveRecord::Base
   
   def self.getProjectsOwnedBy(id)
     rows = connection.select_all(%Q{select p.key, p.name, p.description, p.money from project p, project_team t 
-      where t.person_id = #{sanitize(id)} and p.status = 'A' and t.status='L' and t.project_key = p.key})
+      where t.person_id = #{sanitize(id)} and p.status = 'A' and t.status='L' and t.project_key = p.key order by key asc})
     
     for row in rows
       row["key"] = Integer(row["key"])
@@ -42,7 +42,7 @@ class GoblinDb < ActiveRecord::Base
   
   def self.getProjectsPersonIn(id)
     rows = connection.select_all(%Q{select p.key, p.name, p.description, p.money from project p, project_team t 
-      where t.person_id = #{sanitize(id)} and t.status in ('A', 'L') and p.status='A' and t.project_key = p.key order by name asc})
+      where t.person_id = #{sanitize(id)} and t.status in ('A', 'L') and p.status='A' and t.project_key = p.key order by key asc})
     
     for row in rows
       row["key"] = Integer(row["key"])
@@ -158,16 +158,26 @@ class GoblinDb < ActiveRecord::Base
       rows = connection.select_all(%Q{select id, name from person where id = #{sanitize(personId)} and status='A'})
     end
     
-    if (rows.size == 0)
-      rows = connection.select_all(%Q{select id, name from person where name = #{sanitize(personName)} and status='A'})
+    if rows.length != 0
+      person_found = rows[0]
+    else
+      upname = personName.mb_chars.upcase.to_s
+      
+      rows = connection.select_all(%Q{select id, name from person where status='A'})
+      for row in rows
+        name = row["name"].mb_chars.upcase.to_s
+        if name == upname
+          person_found = row
+          break
+        end
+      end
     end
     
-    if rows.size > 0
-      rows[0]["id"] = Integer(rows[0]["id"])
-      return rows[0]
+    if person_found
+      person_found["id"] = Integer(person_found["id"])
     end
     
-    return nil
+    return person_found
   end
 
 ###############################################################################  
