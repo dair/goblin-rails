@@ -22,9 +22,13 @@
 
     <br />
     <% if @editable and @research["status"] == 'A' %>
-		<%= form_tag(:action => "research_submit") do %>
-		<%= hidden_field_tag 'id', @research["id"] %>  
-    	<input type="button" id="send" name="send" value="Отправить на рассмотрение научной комиссии" onclick='onSend("Отправить исследование на рассмотрение научной комиссии?", this.form)' /><br />
+    	<% if @research["members"].instance_of? Array and @research["members"].length > 0 %>
+			<%= form_tag(:action => "research_submit") do %>
+				<%= hidden_field_tag 'id', @research["id"] %>  
+		    	<input type="button" id="send" name="send" value="Отправить на рассмотрение научной комиссии" onclick='onSend("Отправить исследование на рассмотрение научной комиссии?", this.form)' /><br />
+	    	<% end %>
+	    <% else %>
+	    	Исследовательская группа пуста
     	<% end %>
     <% end %>
     
