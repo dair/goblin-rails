@@ -19,10 +19,11 @@ class GoblinDb < ActiveRecord::Base
   end
   
   def self.getProjects
-    rows = connection.select_all(%Q{select key, name, description from project where status='A' order by key asc})
+    rows = connection.select_all(%Q{select p.key, p.name, p.description, l.id as leader_id, l.name as leader from project p, project_team t, person l where p.status='A' and t.project_key = p.key and t.person_id = l.id and t.status = 'L' order by p.key asc})
     
     for row in rows
       row["key"] = Integer(row["key"])
+      row["leader_id"] = Integer(row["leader_id"])
     end
     
     return rows
@@ -277,13 +278,39 @@ class GoblinDb < ActiveRecord::Base
   
   def self.financeResearch(id, amount)
     transaction do
-      connection.update("update project set money = money - #{sanitize(amount)} where project.status = 'A' and project.key in (select project_key from research where id = #{sanitize(id)})")
-      connection.update("update research set balance = balance + #{sanitize(amount)} where id = #{sanitize(id)}")
+      puts "======================================================================="
+      
+      query = "insert into project (key, name, description, money, status) (select key, name, description, money - #{sanitize(amount)}, 'N' from project where project.status = 'A' and project.key in (select project_key from research where id = #{sanitize(id)}))"
+      puts query
+      connection.insert(query)
+      
+      query = "update project set status = 'H' where key in (select project_key from research where id = #{sanitize(id)}) and status = 'A'"
+      puts query
+      connection.update(query)
+      
+      query = "update project set status = 'A' where key in (select project_key from research where id = #{sanitize(id)}) and status = 'N'"
+      puts query
+      
+      connection.update(query)
+      
+      query = "update research set balance = balance + #{sanitize(amount)} where id = #{sanitize(id)}"
+      puts query
+      connection.update(query)
+      puts "======================================================================="
+      #raise ActiveRecord::Rollback
     end
   end
   
-  def self.getResearchEntries(id)
-    rows = connection.select_all("select r.entry, p.name from research_entry r, person p where r.research_id = #{sanitize(id)} and r.person_id = p.id order by r.created_at asc")
+  def self.getResearchEntries(id, is_team_member)
+    query = "select r.entry, p.name from research_entry r, person p where r.research_id = #{sanitize(id)} and r.person_id = p.id"
+    
+    if (not is_team_member)
+      query += " and p.status = 'A'"
+    end
+    
+    query += " order by r.created_at asc"
+    
+    rows = connection.select_all(query)
     return rows
   end
   

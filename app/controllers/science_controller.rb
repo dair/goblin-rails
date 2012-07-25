@@ -274,9 +274,14 @@ class ScienceController < ApplicationController
     @addable = (member_ids.index(session[:userid]) != nil) and (research["status"] == 'S')
     @project = GoblinDb.getProjectInfo(key)
     
-    @entries = GoblinDb.getResearchEntries(id)
+    @team_member = true
+    if team.map{|x| x["id"]}.index(session[:userid]) == nil
+      @team_member = false
+    end
+    
+    @entries = GoblinDb.getResearchEntries(id, @team_member)
     @subtitle = 'Исследование'
-
+    
   end
   
 ##################################################################################

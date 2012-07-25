@@ -15,7 +15,7 @@
         <tr>
           <td style="text-align: right; vertical-align: top; width: 15%">Описание проекта:</td> 
           <td style="text-align: left; vertical-align: top;">
-            <%=raw sanitize(simple_format(@project["description"]), :tags => %w(br s i b) ) %> 
+            <%=raw sanitize(simple_format(@project["description"]), :tags => %w(p br s i b) ) %> 
           </td> 
         </tr> 
         <tr> 

@@ -28,15 +28,19 @@
     	<% end %>
     <% end %>
     
-    <% if @research["status"] == '$' and @research["balance"]< 0 and @project["money"] + @research["balance"] >= 0 %>
-		<%= form_tag(:action => "research_finance") do %>
-		<%= hidden_field_tag 'id', @research["id"] %>
-		<%= hidden_field_tag 'balance', @research["balance"] %>
-    	<input type="button" id="finance" name="finance" value="Финансировать исследование" onclick='onSend("Профинансировать исследование полностью на сумму $" + <%= @research["balance"].abs %>, this.form)' /><br />
+    <% if @research["status"] == '$' %>
+    	<% if @research["balance"]< 0 and @project["money"] + @research["balance"] >= 0 %>
+			<%= form_tag(:action => "research_finance") do %>
+				<%= hidden_field_tag 'id', @research["id"] %>
+				<%= hidden_field_tag 'balance', @research["balance"] %>
+		    	<input type="button" id="finance" name="finance" value="Финансировать исследование" onclick='onSend("Профинансировать исследование полностью на сумму $" + <%= @research["balance"].abs %>, this.form)' /><br />
+    		<% end %>
+    	<% else %>
+    		Не хватает средств для финансирования
     	<% end %>
     <% end %>
     
-    <% if @research["status"] == 'S' %>
+    <% if @research["status"] == 'S' and @team_member %>
 		<%= form_tag("research_add_entry", :method => "GET") do %>
 		<%= hidden_field_tag 'id', @research["id"] %>
 		<%= submit_tag("Добавить информацию") %>
