@@ -23,7 +23,10 @@ class GoblinDb < ActiveRecord::Base
     
     for row in rows
       row["key"] = Integer(row["key"])
+      key = row["key"]
       row["leader_id"] = Integer(row["leader_id"])
+      cnt = connection.select_all("select count(*) from research where project_key = #{key}")
+      row["research_count"] = Integer(cnt[0]["count"])
     end
     
     return rows
@@ -315,7 +318,7 @@ class GoblinDb < ActiveRecord::Base
   end
   
   def self.getResearchListForMaster
-    rows = connection.select_all("select id, project_key, name from research where status = 'P' order by updated_at asc")
+    rows = connection.select_all("select id, project_key, name, status from research where status in ('P', '$', 'S', 'H') order by updated_at asc")
     for row in rows
       row["id"] = Integer(row["id"])
       row["project_key"] = Integer(row["project_key"])

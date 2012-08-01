@@ -11,7 +11,8 @@
 	        <tr> 
 	          <td style="text-align: right; vertical-align: top;">Запись хода исследования:</td> 
 	          <td style="text-align: left; vertical-align: top;">
-	            <%= text_area_tag("entry", "", :size => "90x10") %>
+	            <%= text_area_tag("entry", "", :size => "90x10") %><br/>
+                <%= check_box_tag("finished", "yes") %>Счесть исследование завершённым
 	            	            <font size=-1><br>Хозяйке на заметку: в описаниях и комментах возможны тэги HTML &lt;s>, &lt;b>; и &lt;i><br>
 	            Пример:
 	            <table border=1>

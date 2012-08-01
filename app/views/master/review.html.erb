@@ -7,10 +7,18 @@
 	<br>
 	<% if @research["status"] == 'P' %>
 		<div style="background-color:#FFDF8D">
+	<% elsif @research["status"] == 'H' %>
+		<div style="background-color:#25FF15">
+	<% else %>
+		<div>
 	<% end %>
+	
 	<%= render "research_table" %>
 	<% if @research["status"] == 'P' %>
 		<%= link_to "Рассмотреть", :action => "review_research", :id => @research["id"] %>
-		</div>
-	<% end %>
+    <% else %>
+        <%= link_to "Прокомментировать", :action => "comment_research", :id => @research["id"] %>
+    <% end %>
+	
+    </div>
 <% end %>

@@ -576,6 +576,10 @@ class ScienceController < ApplicationController
     end
     
     GoblinDb.addResearchEntry(id, session[:userid], params[:entry])
+
+    if params[:finished] == "yes"
+        GoblinDb.setResearchStatus(id, 'H')
+    end
     redirect_to :action => "research_info", :id => id, :key => key
   end
   

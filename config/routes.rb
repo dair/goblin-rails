@@ -35,6 +35,8 @@ GoblinRails::Application.routes.draw do
   get "master/review"
   get "master/review_research"
   post "master/review_research_write"
+  get "master/comment_research"
+  post "master/comment_research_write"
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

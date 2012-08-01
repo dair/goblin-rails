@@ -2,6 +2,7 @@
 	<tbody>
 		<tr>
 			<td>
+                <%= link_to "Все проекты", :controller => "science", :action => "main" %><br>
 	        	<% if @research_list.instance_of? Array and  @research_list.count > 0 %>
 				<table cellspacing="0" cellpadding="3" align="top" style="width: 100%; border: 1px dotted #000000;" frame="void" rules="none" class=" htmtableborders">
 				    <tbody>
@@ -9,7 +10,14 @@
 	        		<% for @item in @research_list %>
 	        		
 	        		<tr>
-	        			<td><%= link_to @item["name"], :action => "review", :id => @item["id"] %></td>
+                        <% if @item["status"] == 'P' %>
+                            <td bgcolor="#FACE8D">
+			<% elsif @item["status"] == 'H' %>
+			    <td bgcolor="#25FF15">
+                        <% else %>
+	        	    <td>
+                        <% end %>
+                            <%= link_to @item["name"], :action => "review", :id => @item["id"] %></td>
 	        		</tr>
 	        		
 					<% end %>

@@ -1,0 +1,20 @@
+<%= link_to "Исследования", :action => "main" %>&nbsp;|&nbsp;<%= link_to "Информация о проекте и исследованиях", :action => "review", :id => @research["id"] %>
+<br /><br />
+<%= render "research_table" %>
+<br>
+<font size=+1>Комментарий "Научного совета":</font><br><br>
+<%= form_tag(:action => "comment_research_write") do %>
+	<%= hidden_field_tag 'id', @research["id"] %>
+	<table>
+		<tr>
+			<td>
+				Комментарий:
+			</td>
+			<td>
+				<%= text_area_tag("comment", "", :size => "90x10") %>
+			</td>
+		</tr>
+	</table>
+	<%= submit_tag("Послать") %>		
+<% end %>
+

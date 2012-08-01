@@ -47,6 +47,16 @@ class MasterController < ApplicationController
     id = id0(params[:id])
     @research = GoblinDb.getResearchInfo(id)
   end
+
+  def comment_research
+    if failLogin() or failMaster()
+      return
+    end
+    @subtitle = "Принять решение по исследованию"
+    id = id0(params[:id])
+    @research = GoblinDb.getResearchInfo(id)
+    
+  end
   
   def review_research_write
     if failLogin() or failMaster()
@@ -76,8 +86,6 @@ class MasterController < ApplicationController
         return
       end
       
-      
-      
     elsif (params[:is_ok] == "not_ok")
       GoblinDb.addResearchEntry(id, session[:userid], params[:comment])
       GoblinDb.setResearchStatus(id, 'A')
@@ -89,4 +97,13 @@ class MasterController < ApplicationController
     end
   end
   
+  def comment_research_write
+    if failLogin() or failMaster()
+      return
+    end
+    id = id0(params[:id])
+    
+    GoblinDb.addResearchEntry(id, session[:userid], params[:comment])
+    redirect_to :action => "review", :id => id
+  end
 end
